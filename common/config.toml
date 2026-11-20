@@ -36,3 +36,14 @@ core_forecasts = [
   { kind = "outperform",   ticker_a = "XEF.TO",  ticker_b = "VFV.TO",  horizon_days = 180 },
   { kind = "outperform",   ticker_a = "XIC.TO",  ticker_b = "XEQT.TO", horizon_days = 90 },
 ]
+
+# ===== 1.4.0: AI stock picks (companies) — same agents, same logic as [lab] =====
+# Prompts: dashboard → System → Prompts ("Company stocks"). Replies: inbox/<agent>-stocks-YYYY-MM.txt
+[stocks]
+enabled    = true
+benchmark  = "XEQT.TO"
+compare    = ["SPY", "XIU.TO"]
+min_picks  = 5
+max_picks  = 15
+max_weight = 0.25
+fx_fee     = 0.015                     # Wealthsimple FX fee on non-CAD stocks (CAD account)

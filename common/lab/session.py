@@ -8,6 +8,7 @@ from pathlib import Path
 from . import prompts
 from .parse import extract_json, validate
 from .providers import ask
+from .tracks import track_cfg, track_from
 
 
 def _now():
@@ -15,13 +16,15 @@ def _now():
 
 
 def month_session(conn, lab, d: str) -> int:
-    """جلسة واحدة لكل شهر؛ تُنشأ عند أول رد."""
-    r = conn.execute("SELECT id FROM sessions WHERE substr(created_at,1,7)=?", (d[:7],)).fetchone()
+    """جلسة واحدة لكل شهر ولكل مسار (etf / stocks)؛ تُنشأ عند أول رد."""
+    track = lab.get("track", "etf")
+    r = conn.execute("SELECT id FROM sessions WHERE substr(created_at,1,7)=? AND track=?",
+                     (d[:7], track)).fetchone()
     if r:
         return r["id"]
     cur = conn.execute(
-        "INSERT INTO sessions (created_at, question, context, universe) VALUES (?,?,?,?)",
-        (d, lab["question"].strip(), "", json.dumps(lab["universe"])))
+        "INSERT INTO sessions (created_at, question, context, universe, track) VALUES (?,?,?,?,?)",
+        (d, lab["question"].strip(), "", json.dumps(lab["universe"]), track))
     conn.commit()
     return cur.lastrowid
 
@@ -49,17 +52,59 @@ def _store(conn, sid, agent, model, rnd, raw, obj, alloc, fcs):
     return rid
 
 
-def record(conn, cfg, agent, raw, obj, d, log=print):
-    lab = cfg["lab"]
+def _check_tickers(conn, lab, alloc, fcs, d, warns):
+    """مسار الشركات: كل رمز يجب أن يوجد في Yahoo، والتوزيع لشركات فقط (لا صناديق)."""
+    from urllib.error import HTTPError
+    from .prices import fetch_yahoo
+    start = (date.fromisoformat(d) - timedelta(days=400)).isoformat()
+    names = set(alloc) | {f["ticker_a"] for f in fcs} | {f["ticker_b"] for f in fcs if f["ticker_b"]}
+    bad = set()
+    for t in sorted(names - {"CASH"}):
+        if conn.execute("SELECT 1 FROM securities WHERE ticker=?", (t,)).fetchone():
+            continue
+        try:
+            if not fetch_yahoo(conn, t, start, date.today().isoformat()):
+                bad.add(t)
+        except HTTPError as e:
+            if e.code in (400, 404):
+                bad.add(t)
+            else:
+                warns.append(f"{t}: could not be checked now ({e}) — kept")
+        except Exception as e:
+            warns.append(f"{t}: could not be checked now ({e}) — kept")
+    for t in sorted(bad):
+        warns.append(f"{t}: unknown ticker on Yahoo Finance — dropped")
+    funds = {r[0] for r in conn.execute(
+        "SELECT ticker FROM securities WHERE type IN ('ETF','MUTUALFUND','CRYPTOCURRENCY')")
+        if r[0] in alloc}
+    for t in sorted(funds):
+        warns.append(f"{t}: is a fund, not a company — dropped from the allocation")
+    alloc = {t: w for t, w in alloc.items() if t not in bad and t not in funds}
+    tot = sum(alloc.values())
+    alloc = {t: w / tot for t, w in alloc.items()} if tot else {}
+    fcs = [f for f in fcs if f["ticker_a"] not in bad and f["ticker_b"] not in bad]
+    n = len([t for t in alloc if t != "CASH"])
+    if not lab["min_picks"] <= n <= lab["max_picks"]:
+        warns.append(f"{n} companies (asked for {lab['min_picks']}-{lab['max_picks']})")
+    big = [t for t, w in alloc.items() if t != "CASH" and w > lab["max_weight"] + 1e-6]
+    if big:
+        warns.append(f"above the {lab['max_weight']:.0%} cap: {', '.join(big)} (kept as given)")
+    return alloc, fcs
+
+
+def record(conn, cfg, agent, raw, obj, d, log=print, track="etf"):
+    lab = track_cfg(cfg, track)
     sid = month_session(conn, lab, d)
     if has_response(conn, sid, agent):
-        log(f"  {agent}: already has a response for {d[:7]} — skipped")
+        log(f"  {agent} ({track}): already has a response for {d[:7]} — skipped")
         return False
     alloc, fcs, warns = validate(obj, lab["universe"], lab["horizons_days"], d)
+    if track == "stocks":
+        alloc, fcs = _check_tickers(conn, lab, alloc, fcs, d, warns)
     if len(fcs) < lab["min_forecasts_per_agent"]:
         warns.append(f"only {len(fcs)} valid forecasts (min {lab['min_forecasts_per_agent']})")
     _store(conn, sid, agent, cfg["agents"][agent]["model"], 1, raw, obj, alloc, fcs)
-    log(f"  {agent} [{d}]: {len(fcs)} forecasts, alloc=" +
+    log(f"  {agent} [{track} {d}]: {len(fcs)} forecasts, alloc=" +
         ", ".join(f"{t} {w:.0%}" for t, w in sorted(alloc.items(), key=lambda x: -x[1])))
     for w in warns:
         log(f"      ! {w}")
@@ -80,7 +125,7 @@ def run_api_agents(conn, cfg, d=None, log=print):
     for name, a in cfg["agents"].items():
         if a["provider"] == "manual":
             continue
-        sid = month_session(conn, cfg["lab"], d)
+        sid = month_session(conn, track_cfg(cfg, "etf"), d)
         if has_response(conn, sid, name):
             log(f"  {name}: already ran for {d[:7]}")
             continue
@@ -107,7 +152,8 @@ def _agent_from_filename(name: str, agents) -> str | None:
 
 
 def ingest(conn, cfg, inbox: Path, log=print):
-    """يقرأ ملفات inbox/*.txt|*.json|*.md: اسم الملف يبدأ بـ chatgpt أو claude."""
+    """يقرأ ملفات inbox/*.txt|*.json|*.md: اسم الملف يبدأ باسم الوكيل (gemini / chatgpt / claude).
+    ردود الشركات: "track": "stocks" في JSON أو stocks في اسم الملف (claude-stocks-2026-12.txt)."""
     inbox.mkdir(exist_ok=True)
     done_dir = inbox / "processed"
     bad_dir = inbox / "failed"
@@ -132,7 +178,7 @@ def ingest(conn, cfg, inbox: Path, log=print):
                     d = claimed
             except ValueError:
                 pass
-            record(conn, cfg, agent, raw, obj, d.isoformat(), log)
+            record(conn, cfg, agent, raw, obj, d.isoformat(), log, track_from(p.name, obj))
             dest = done_dir
         except Exception as e:
             log(f"  {p.name}: FAILED — {e}")

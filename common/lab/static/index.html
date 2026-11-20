@@ -8,52 +8,83 @@
 :root{
   --bg:#f6f7f9;--panel:#fff;--ink:#1b1f24;--muted:#5f6b7a;--line:#e3e6ea;
   --accent:#2f6fde;--good:#1f8a4c;--bad:#c2410c;--warn:#b7791f;--chip:#eef2f7;
-  --gemini:#2f6fde;--chatgpt:#10a37f;--claude:#c96442;--consensus:#6b5bd2;
+  --gemini:#2f6fde;--chatgpt:#10a37f;--claude:#c96442;--consensus:#6b5bd2;--grid:#eceff3;
 }
 @media (prefers-color-scheme:dark){:root{
   --bg:#111418;--panel:#1a1f25;--ink:#e6e9ed;--muted:#97a3b2;--line:#2b323b;
   --accent:#6ea0ff;--good:#4ccb83;--bad:#ff8a5c;--warn:#e7b65a;--chip:#232a33;
-  --gemini:#6ea0ff;--chatgpt:#3fcf9f;--claude:#e58a66;--consensus:#a495ff;}}
+  --gemini:#6ea0ff;--chatgpt:#3fcf9f;--claude:#e58a66;--consensus:#a495ff;--grid:#252b33;}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,"Segoe UI",Tahoma,sans-serif}
-header{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 20px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:6}
 header h1{font-size:18px;margin:0}
 header .sp{flex:1}
 #ver{font-size:12px}
-nav{display:flex;gap:4px;flex-wrap:wrap;padding:10px 20px;background:var(--panel);border-bottom:1px solid var(--line)}
+nav{display:flex;gap:4px;flex-wrap:wrap;padding:8px 20px;background:var(--panel);border-bottom:1px solid var(--line)}
 nav button{border:0;background:none;color:var(--muted);padding:7px 12px;border-radius:8px;cursor:pointer;font:inherit}
 nav button.on{background:var(--chip);color:var(--ink);font-weight:600}
-main{padding:20px;max-width:1300px;margin:auto}
-section{display:none}section.on{display:block}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+nav#menu button{font-size:15.5px;font-weight:600}
+nav#menu button.on{background:var(--accent);color:#fff}
+nav#sub{padding:6px 20px}
+nav#items{padding:6px 20px;gap:6px;max-height:120px;overflow:auto}
+nav#items button{border:1px solid var(--line);font-size:13px;padding:4px 10px}
+nav#items button.on{border-color:var(--accent)}
+nav:empty{display:none}
+main{padding:20px;max-width:1360px;margin:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:18px}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:14px}
 .card h3{margin:0 0 8px;font-size:15px}
-.kpi .v{font-size:24px;font-weight:700}.kpi .l{color:var(--muted);font-size:13px}
+.kpi .v{font-size:22px;font-weight:700}.kpi .l{color:var(--muted);font-size:13px}
 table{width:100%;border-collapse:collapse;font-size:14px}
 th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:start;vertical-align:top}
 th{color:var(--muted);font-weight:600;font-size:13px}
+th.sort{cursor:pointer;white-space:nowrap}th.sort:hover{color:var(--ink)}
 .ltr{direction:ltr;unicode-bidi:isolate}
 /* LTR values (numbers, tickers, dates) inside an RTL table must still follow the column's side */
 html[dir=rtl] td.ltr,html[dir=rtl] .kpi .v.ltr{text-align:right}
 .tablewrap{overflow-x:auto}
-.chip{display:inline-block;padding:1px 8px;border-radius:99px;background:var(--chip);font-size:12px}
+.chip{display:inline-block;padding:1px 8px;border-radius:99px;background:var(--chip);font-size:12px;white-space:nowrap}
+.chip.warnc{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+.chip.goodc{background:color-mix(in srgb,var(--good) 18%,transparent);color:var(--good)}
 .good{color:var(--good)}.bad{color:var(--bad)}.warn{color:var(--warn)}.muted{color:var(--muted)}
 .agent{font-weight:600}.a-gemini{color:var(--gemini)}.a-chatgpt{color:var(--chatgpt)}.a-claude{color:var(--claude)}.a-consensus{color:var(--consensus)}
-button.btn{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:8px 14px;cursor:pointer;font:inherit}
+button.btn{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:7px 13px;cursor:pointer;font:inherit}
 button.btn.sec{background:var(--chip);color:var(--ink)}
+button.btn.sm{padding:3px 9px;font-size:13px}
+button.btn.danger{background:var(--bad)}
 button.btn:disabled{opacity:.5;cursor:default}
+button.link{background:none;border:0;color:var(--accent);cursor:pointer;font:inherit;padding:0;text-align:start}
 select,textarea,input{font:inherit;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+input[type=number]{width:110px}
 textarea{width:100%;min-height:200px;direction:ltr;font-family:ui-monospace,Consolas,monospace;font-size:13px}
 pre{white-space:pre-wrap;direction:ltr;text-align:left;background:var(--chip);padding:12px;border-radius:8px;font-size:12.5px;max-height:520px;overflow:auto;margin:0}
-.bar{height:8px;background:var(--chip);border-radius:4px;overflow:hidden;min-width:80px}
+.bar{height:8px;background:var(--chip);border-radius:4px;overflow:hidden;min-width:70px}
 .bar>i{display:block;height:100%;background:var(--accent)}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
 .agents{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:14px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
 details summary{cursor:pointer;color:var(--muted)}
 .md h1{font-size:20px}.md h2{font-size:16px;margin-top:22px}
 .md blockquote{margin:8px 0;padding:6px 12px;border-inline-start:3px solid var(--warn);color:var(--muted)}
+.note{border-inline-start:3px solid var(--warn);padding:8px 12px;background:var(--panel);border-radius:8px;margin-bottom:14px;color:var(--muted);font-size:14px}
 svg.spark{display:block}
-@media (max-width:600px){main{padding:12px}.agents{grid-template-columns:1fr}}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:var(--panel);color:var(--muted);padding:5px 10px;cursor:pointer;font:inherit;font-size:13px}
+.seg button.on{background:var(--accent);color:#fff}
+.chartbox{position:relative;direction:ltr}
+.chartbox svg{display:block;width:100%;height:auto}
+.chartbox text{font-size:11px;fill:var(--muted)}
+.tip{position:absolute;pointer-events:none;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-size:12px;box-shadow:0 4px 14px rgba(0,0,0,.12);display:none;white-space:nowrap;z-index:4}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:12.5px;margin-top:6px;direction:ltr;justify-content:flex-start}
+.legend span{display:inline-flex;align-items:center;gap:5px}.legend i{width:14px;height:3px;border-radius:2px;display:inline-block}
+.ac{position:relative;display:inline-block}
+.ac .list{position:absolute;top:100%;inset-inline-start:0;z-index:8;background:var(--panel);border:1px solid var(--line);border-radius:8px;min-width:340px;max-height:300px;overflow:auto;box-shadow:0 6px 18px rgba(0,0,0,.15)}
+.ac .list div{padding:6px 10px;cursor:pointer;font-size:13.5px;border-bottom:1px solid var(--line)}
+.ac .list div:hover{background:var(--chip)}
+.formgrid{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.formgrid label{display:flex;flex-direction:column;font-size:12.5px;color:var(--muted);gap:3px}
+.hl{background:color-mix(in srgb,var(--accent) 7%,transparent)}
+@media (max-width:600px){main{padding:12px}.agents{grid-template-columns:1fr}header{padding:10px 12px}nav{padding:6px 12px}}
 </style>
 </head>
 <body>
@@ -68,25 +99,20 @@ svg.spark{display:block}
   <button class="btn sec" id="updbtn"></button>
   <button class="btn sec" id="langbtn" title="Language / اللغة"></button>
 </header>
-<nav id="nav"></nav>
-<main>
-  <section id="overview"></section>
-  <section id="sessions"></section>
-  <section id="forecasts"></section>
-  <section id="prices"></section>
-  <section id="inbox"></section>
-  <section id="prompts"></section>
-  <section id="report"></section>
-  <section id="log"></section>
-</main>
+<nav id="menu"></nav>
+<nav id="sub"></nav>
+<nav id="items"></nav>
+<main id="view"></main>
 <script>
 /* ---------- translations: every visible UI string lives here ---------- */
 const I18N={
 ar:{
   title:"Agents Lab · مختبر الوكلاء",run:"تشغيل الآن",refresh:"تحديث",switch_to:"English",
-  tab_overview:"نظرة عامة",tab_sessions:"الجلسات والردود",tab_forecasts:"التوقعات والحسم",
-  tab_prices:"الصناديق والأسعار",tab_inbox:"صندوق الردود",tab_prompts:"النصوص المجدولة",tab_report:"التقرير",tab_log:"السجل",
-  method_manual:"تطبيق + inbox",method_api:"API",not_yet:"لم يصل بعد — الصقه في «صندوق الردود»",
+  m_lab:"مختبر الصناديق (AI)",m_picks:"اختيارات الأسهم (AI)",m_inv:"المستثمرون",m_pf:"محافظي",m_sys:"النظام",
+  s_overview:"نظرة عامة",s_sessions:"الجلسات والردود",s_forecasts:"التوقعات والحسم",s_prices:"الصناديق والأسعار",
+  s_recs:"التوصيات الحالية",s_perf:"الأداء والنتائج",s_compare:"مقارنة شاملة",s_stocks:"مستثمرو الأسهم",s_etf:"محافظ ETF",
+  s_all:"كل المحافظ",s_new:"+ محفظة جديدة",s_inbox:"صندوق الردود",s_prompts:"النصوص المجدولة",s_report:"التقرير",s_log:"السجل",
+  method_manual:"تطبيق + inbox",method_api:"API",not_yet:"لم يصل بعد — الصقه في «النظام ← صندوق الردود»",
   kpi_sessions:"جلسات شهرية",kpi_responses:"ردود الوكلاء",kpi_resolved:"توقعات محسومة",of:"من",
   kpi_next:"موعد الحسم القادم",kpi_lastprice:"آخر سعر محفوظ",kpi_inbox:"ملفات تنتظر في inbox",
   inbox_failed:n=>`${n} فشل استيرادها`,
@@ -108,11 +134,13 @@ ar:{
   core_title:"الأسئلة الإلزامية الشهرية",days:"يوماً",
   horizons_note:(h,n)=>`آفاق مسموحة: <span class="ltr">${h}</span> يوماً · حد أدنى ${n} توقعات لكل وكيل`,
   paste_title:"لصق رد جديد",
-  paste_help:a=>`انسخ رد الوكيل كاملاً (${a}) والصقه هنا. يُحفظ في inbox ويُستورد فوراً.`,
+  paste_help:a=>`انسخ رد الوكيل كاملاً (${a}) والصقه هنا، واختر نوع الجلسة. يُحفظ في inbox ويُستورد فوراً.`,
+  track_etf:"صناديق (ETF)",track_stocks:"أسهم الشركات",
   save_import:"حفظ واستيراد",paste_ph:"الصق الرد كاملاً هنا...",waiting:"في الانتظار",import_failed:"فشل الاستيراد",
   failed_help:"صحّح الملف وأعده إلى مجلد inbox، أو الصق الرد من جديد أعلاه.",processed:"تم استيراده (آخر 50)",empty:"فارغ",
   prompts_help1:"كل شهر يوم 20: انسخ نص كل وكيل والصقه في تطبيقه (أو في مهمته المجدولة). لا تعدّل النص أثناء التجربة.",
-  prompts_help2:"Claude و Codex يحفظان الرد تلقائياً في inbox إن كان لديهما وصول لهذا المجلد. Gemini (وأي وكيل آخر لا يستطيع الكتابة على جهازك): انسخ رده والصقه في «صندوق الردود» — اختر اسم الوكيل الصحيح.",
+  prompts_help2:"Claude و Codex يحفظان الرد تلقائياً في inbox إن كان لديهما وصول لهذا المجلد. Gemini (وأي وكيل آخر لا يستطيع الكتابة على جهازك): انسخ رده والصقه في «صندوق الردود» — اختر اسم الوكيل ونوع الجلسة الصحيحين.",
+  prompts_etf:"نصوص جلسة الصناديق (ETF)",prompts_stocks:"نصوص جلسة أسهم الشركات",
   copy:"نسخ",copied:"تم النسخ",selected:"محدد — اضغط Ctrl+C",
   log_title:"logs/run.log (آخر 300 سطر)",no_log:"لا يوجد سجل بعد.",
   running_since:t=>`جارٍ التشغيل منذ ${t}…`,last_run:t=>`آخر تشغيل يدوي: ${t}`,see_log:"✗ (راجع السجل)",
@@ -122,13 +150,55 @@ ar:{
   confirm_update:l=>`تثبيت الإصدار ${l}؟
 ستتوقف اللوحة لحظات، وتؤخذ نسخة احتياطية من بياناتك قبل أي تغيير.`,
   updating:"جارٍ التحديث… ستعود اللوحة خلال دقيقة تقريباً",updated:v=>`تم التحديث إلى ${v} ✓`,
-  update_failed:"فشل التحديث — أُعيد الإصدار السابق كما كان.",update_log:"سجل التحديث"
+  update_failed:"فشل التحديث — أُعيد الإصدار السابق كما كان.",update_log:"سجل التحديث",
+  loading:"جارٍ التحميل…",error:"خطأ",save:"حفظ",cancel:"إلغاء",delete:"حذف",add:"إضافة",
+  // AI picks
+  picks_intro:"نفس منطق مختبر الصناديق: الوكلاء الثلاثة يجيبون يوم 20 بنفس النص، يختارون الشركات الأجدر ونسبة كل منها، ويقدّمون توقعات احتمالية تُقيَّم بـ Brier. محفظة كل وكيل تُتابع ورقياً بالدولار الكندي بعد رسوم تحويل العملة.",
+  no_picks:"لا توجد توصيات أسهم بعد. يوم 20: انسخ نصوص «أسهم الشركات» من «النظام ← النصوص المجدولة»، والصق الردود في «صندوق الردود» مع اختيار «أسهم الشركات».",
+  consensus_title:"توصية الإجماع (متوسط أوزان الوكلاء)",th_company:"الشركة",th_weight:"الوزن",th_agents_n:"عدد الوكلاء",
+  thesis:"الفكرة",wrong_if:"خطئي إن:",to_portfolio:"إنشاء محفظة بهذه التوصية",
+  amount_cad:"المبلغ (CAD)",start_date:"تاريخ البدء",created_pf:"تم إنشاء المحفظة",
+  perf_title:b=>`الأداء الورقي بالدولار الكندي (مبلغ واحد من تاريخ البدء، بعد رسوم تحويل العملة) · المرجع ${b}`,
+  th_return:"العائد",no_perf:"تبدأ متابعة الأداء من أول يوم تداول بعد الرد.",picks_bench_note:f=>`رسوم تحويل العملة ${pct(f,1)} على شراء الأسهم غير الكندية مخصومة؛ رسم البيع النهائي غير مخصوم.`,
+  // investors
+  inv_intro:"المستثمرون من «Investor-Watchlist-Final-2026-11». «النسخ» = شراء المراكز المعلنة بنفس أوزانها (بعد جعل مجموعها 100%) بالدولار الكندي مع رسوم تحويل العملة، وإعادة التوازن عند كل لقطة محفظة جديدة.",
+  hindsight_note:"تنبيه: الفترات قبل أول لقطة محفوظة (2026-11-20) «ماذا لو» بأثر رجعي — تطبيق محفظة اليوم على الماضي، فتبدو أفضل من الواقع لأن الأسهم الحالية هي غالباً التي ارتفعت. السجل الحقيقي هو العمود «المنشور» وخط الورقة المدرجة إن وُجد. المتابعة الحقيقية تبدأ من «تاريخ المتابعة».",
+  period:"الفترة:",p_follow:"منذ المتابعة",p_ytd:"منذ بداية السنة",p_1y:"سنة",p_3y:"3 سنوات",p_5y:"5 سنوات",p_10y:"10 سنوات",p_max:"الكل",p_custom:"مخصص",
+  p_1m:"شهر",p_3m:"3 أشهر",from_year:"من سنة",to_year:"إلى سنة",
+  copy_amount:"مبلغ النسخ (CAD)",list_all:"الكل",list_stocks:"أسهم",list_etf:"ETF",search_name:"بحث بالاسم…",
+  th_investor:"المستثمر",th_list:"القائمة",th_style:"الأسلوب",th_score:"التقييم",th_verdict:"الحكم",
+  th_reported5:"5 سنوات (منشور)",th_total:"عائد الفترة",th_cagr:"سنوي",th_maxdd:"أقصى تراجع",th_vs:"مقابل المرجع",
+  th_live:"منذ المتابعة",th_top:"أكبر المراكز",th_since:"منذ",in_chart:"في الرسم",
+  chart_compare:"مقارنة النسخ (العائد التراكمي)",following_since:d=>`تتابعه منذ ${d}`,follow_date:"تاريخ المتابعة",
+  live_empty:d=>`المتابعة الحقيقية بدأت ${d} — يظهر الأداء بعد أول أيام تداول.`,
+  copy_line:"نسخ المحفظة",proxy_line:"السجل الفعلي",yearly:"العائد حسب السنة",th_year:"السنة",th_reported:"المنشور (حقيقي)",
+  th_copy:"النسخ",holdings:"المراكز المعلنة",th_real_w:"الوزن في محفظته",th_copy_w:"الوزن في النسخة",estimated:"تقديري",
+  coverage:c=>`المراكز المعروفة تغطي ${pct(c,0)} من محفظته الحقيقية؛ النسخة توزّع 100% عليها.`,
+  snapshots:"لقطات المحفظة",new_snapshot:"لقطة جديدة (بعد تحديث 13F أو eToro)",as_of:"بتاريخ",th_ticker:"الرمز",
+  add_row:"+ سطر",snapshot_help:"الأوزان كنسبة من محفظته كاملة (مثلاً 8.6). اترك ما لا تعرفه. تُطبَّق النسخة الجديدة من تاريخ اللقطة.",
+  where_track:"مصدر المتابعة",record:"السجل",caveat_l:"المخاطر/تحفظات",fees_paid:f=>`رسوم تحويل عملة مدفوعة في النسخ: ${cad(f)}`,
+  copy_to_pf:"تابع النسخ كمحفظة خاصة",no_inv:"لا توجد بيانات أسعار بعد — اضغط «تشغيل الآن» (أول تنزيل يستغرق دقيقتين تقريباً).",
+  chip_hind:"بأثر رجعي",
+  // portfolios
+  pf_intro:"محافظك الخاصة: أضف عمليات شراء وبيع لأي شركة أو صندوق، وتابع أداءك مقارنة بمؤشر مرجعي يتلقى نفس إيداعاتك في نفس الأيام.",
+  no_pf:"لا توجد محافظ بعد.",pf_name:"اسم المحفظة",pf_bench:"المؤشر المرجعي",pf_fx:"حساب التداول",
+  fx_cad:"حساب CAD (تحويل 1.5% للأوراق غير الكندية)",fx_usd:"حساب USD (بدون رسوم تحويل)",create:"إنشاء",
+  value:"القيمة",invested:"المستثمَر",gain:"الربح",twr:"العائد (موزون زمنياً)",vs_bench_same:"مقابل المرجع بنفس الإيداعات",
+  positions:"المراكز",th_qty:"الكمية",th_cost:"التكلفة (CAD)",th_value:"القيمة (CAD)",th_price:"السعر",th_gain:"الربح",
+  transactions:"العمليات",add_tx:"عملية جديدة",tx_type:"النوع",t_buy:"شراء",t_sell:"بيع",t_deposit:"إيداع",t_withdraw:"سحب",
+  search_sec:"ابحث عن شركة أو صندوق (اسم أو رمز)…",by_qty:"بالكمية",by_amt:"بالمبلغ (CAD)",price_opt:"السعر (فارغ = إغلاق اليوم)",
+  fee_cad:"عمولة (CAD)",note:"ملاحظة",pf_settings:"إعدادات المحفظة",confirm_del_pf:n=>`حذف المحفظة «${n}» وكل عملياتها؟ لا يمكن التراجع.`,
+  confirm_del_tx:"حذف هذه العملية؟",realized:"ربح محقق",fees:"رسوم",cash:"نقد",chart_value:"القيمة",chart_inv:"المستثمَر",
+  pf_note:"الربح يشمل التوزيعات. إن لم يكفِ النقد لشراء، يُعتبر الفرق إيداعاً تلقائياً. رسوم تحويل العملة تُخصم عند الشراء والبيع للأوراق غير الكندية (حساب CAD).",
+  quote_of:(p,d,c)=>`آخر إغلاق: ${p} ${c} (${d})`,archive:"أرشفة",vol:"التذبذب السنوي",partial:"جزئية",
 },
 en:{
   title:"Agents Lab",run:"Run now",refresh:"Refresh",switch_to:"العربية",
-  tab_overview:"Overview",tab_sessions:"Sessions & replies",tab_forecasts:"Forecasts & resolution",
-  tab_prices:"Funds & prices",tab_inbox:"Inbox",tab_prompts:"Prompts",tab_report:"Report",tab_log:"Log",
-  method_manual:"App + inbox",method_api:"API",not_yet:"Not received yet — paste it in the Inbox tab",
+  m_lab:"Fund lab (AI)",m_picks:"Stock picks (AI)",m_inv:"Investors",m_pf:"My portfolios",m_sys:"System",
+  s_overview:"Overview",s_sessions:"Sessions & replies",s_forecasts:"Forecasts & resolution",s_prices:"Funds & prices",
+  s_recs:"Current picks",s_perf:"Performance & scores",s_compare:"Compare all",s_stocks:"Stock-pickers",s_etf:"ETF portfolios",
+  s_all:"All portfolios",s_new:"+ New portfolio",s_inbox:"Inbox",s_prompts:"Prompts",s_report:"Report",s_log:"Log",
+  method_manual:"App + inbox",method_api:"API",not_yet:"Not received yet — paste it in System → Inbox",
   kpi_sessions:"Monthly sessions",kpi_responses:"Agent replies",kpi_resolved:"Resolved forecasts",of:"of",
   kpi_next:"Next resolution date",kpi_lastprice:"Latest stored price",kpi_inbox:"Files waiting in inbox",
   inbox_failed:n=>`${n} failed to import`,
@@ -150,11 +220,13 @@ en:{
   core_title:"Monthly core questions",days:"days",
   horizons_note:(h,n)=>`Allowed horizons: <span class="ltr">${h}</span> days · minimum ${n} forecasts per agent`,
   paste_title:"Paste a new reply",
-  paste_help:a=>`Copy the agent's full reply (${a}) and paste it here. It is saved to inbox and imported immediately.`,
+  paste_help:a=>`Copy the agent's full reply (${a}), paste it here and pick the session type. It is saved to inbox and imported immediately.`,
+  track_etf:"Funds (ETF)",track_stocks:"Company stocks",
   save_import:"Save & import",paste_ph:"Paste the full reply here...",waiting:"Waiting",import_failed:"Import failed",
   failed_help:"Fix the file and move it back into the inbox folder, or paste the reply again above.",processed:"Imported (last 50)",empty:"Empty",
   prompts_help1:"Every month on the 20th: copy each agent's prompt into its app (or its scheduled task). Do not edit the prompt during the experiment.",
-  prompts_help2:"Claude and Codex save their reply to inbox automatically if they can access this folder. Gemini (and any agent that cannot write to your computer): copy its reply and paste it in the Inbox tab — pick the right agent name.",
+  prompts_help2:"Claude and Codex save their reply to inbox automatically if they can access this folder. Gemini (and any agent that cannot write to your computer): copy its reply and paste it in the Inbox tab — pick the right agent and session type.",
+  prompts_etf:"Fund (ETF) session prompts",prompts_stocks:"Company-stocks session prompts",
   copy:"Copy",copied:"Copied",selected:"Selected — press Ctrl+C",
   log_title:"logs/run.log (last 300 lines)",no_log:"No log yet.",
   running_since:t=>`Running since ${t}…`,last_run:t=>`Last manual run: ${t}`,see_log:"✗ (see the log)",
@@ -164,23 +236,67 @@ en:{
   confirm_update:l=>`Install version ${l}?
 The dashboard stops for a moment, and your data is backed up before anything changes.`,
   updating:"Updating… the dashboard will be back in about a minute",updated:v=>`Updated to ${v} ✓`,
-  update_failed:"Update failed — the previous version was restored as it was.",update_log:"Update log"
+  update_failed:"Update failed — the previous version was restored as it was.",update_log:"Update log",
+  loading:"Loading…",error:"Error",save:"Save",cancel:"Cancel",delete:"Delete",add:"Add",
+  picks_intro:"Same logic as the fund lab: the three agents answer on the 20th with the same prompt, pick the companies most worth owning with a percentage for each, and give probability forecasts scored with Brier. Each agent's picks are tracked as a paper portfolio in CAD after FX fees.",
+  no_picks:"No stock picks yet. On the 20th: copy the \"Company stocks\" prompts from System → Prompts, then paste the replies in System → Inbox with \"Company stocks\" selected.",
+  consensus_title:"Consensus pick (mean of the agents' weights)",th_company:"Company",th_weight:"Weight",th_agents_n:"Agents",
+  thesis:"Thesis",wrong_if:"Wrong if:",to_portfolio:"Create a portfolio from these picks",
+  amount_cad:"Amount (CAD)",start_date:"Start date",created_pf:"Portfolio created",
+  perf_title:b=>`Paper performance in CAD (lump sum from the start date, after FX fees) · benchmark ${b}`,
+  th_return:"Return",no_perf:"Tracking starts on the first trading day after the reply.",picks_bench_note:f=>`A ${pct(f,1)} FX fee on buying non-CAD stocks is deducted; the final selling fee is not.`,
+  inv_intro:"Investors from \"Investor-Watchlist-Final-2026-11\". \"Copy\" = buying the disclosed holdings at their weights (scaled to 100%) in CAD with FX fees, rebalancing at every new holdings snapshot.",
+  hindsight_note:"Warning: periods before the first stored snapshot (2026-11-20) are a hindsight \"what-if\" — today's holdings applied to the past, which flatters the result because today's holdings are often the stocks that already went up. The real record is the \"Reported\" column and the listed-vehicle line where there is one. Real tracking starts on the \"follow date\".",
+  period:"Period:",p_follow:"Since following",p_ytd:"YTD",p_1y:"1Y",p_3y:"3Y",p_5y:"5Y",p_10y:"10Y",p_max:"Max",p_custom:"Custom",
+  p_1m:"1M",p_3m:"3M",from_year:"From year",to_year:"To year",
+  copy_amount:"Copy amount (CAD)",list_all:"All",list_stocks:"Stocks",list_etf:"ETF",search_name:"Search by name…",
+  th_investor:"Investor",th_list:"List",th_style:"Style",th_score:"Score",th_verdict:"Verdict",
+  th_reported5:"5Y (reported)",th_total:"Period return",th_cagr:"CAGR",th_maxdd:"Max drawdown",th_vs:"vs benchmark",
+  th_live:"Since following",th_top:"Top holdings",th_since:"Since",in_chart:"In chart",
+  chart_compare:"Copies compared (cumulative return)",following_since:d=>`Following since ${d}`,follow_date:"Follow date",
+  live_empty:d=>`Real tracking started ${d} — performance appears after the first trading days.`,
+  copy_line:"Copy",proxy_line:"Actual record",yearly:"Return by year",th_year:"Year",th_reported:"Reported (real)",
+  th_copy:"Copy",holdings:"Disclosed holdings",th_real_w:"Weight in their portfolio",th_copy_w:"Weight in the copy",estimated:"estimated",
+  coverage:c=>`The known holdings cover ${pct(c,0)} of the real portfolio; the copy spreads 100% across them.`,
+  snapshots:"Holdings snapshots",new_snapshot:"New snapshot (after a 13F or eToro update)",as_of:"As of",th_ticker:"Ticker",
+  add_row:"+ row",snapshot_help:"Weights as a percentage of their whole portfolio (e.g. 8.6). Leave out what you don't know. The copy switches to the new holdings from the snapshot date.",
+  where_track:"Where to track",record:"Record",caveat_l:"Risks / caveats",fees_paid:f=>`FX fees paid by the copy: ${cad(f)}`,
+  copy_to_pf:"Track the copy as a portfolio",no_inv:"No price data yet — click \"Run now\" (the first download takes about two minutes).",
+  chip_hind:"hindsight",
+  pf_intro:"Your own portfolios: add buys and sells of any company or fund and track your performance against a benchmark that receives the same deposits on the same days.",
+  no_pf:"No portfolios yet.",pf_name:"Portfolio name",pf_bench:"Benchmark",pf_fx:"Trading account",
+  fx_cad:"CAD account (1.5% FX on non-CAD securities)",fx_usd:"USD account (no FX fee)",create:"Create",
+  value:"Value",invested:"Invested",gain:"Gain",twr:"Return (time-weighted)",vs_bench_same:"vs benchmark with the same deposits",
+  positions:"Positions",th_qty:"Quantity",th_cost:"Cost (CAD)",th_value:"Value (CAD)",th_price:"Price",th_gain:"Gain",
+  transactions:"Transactions",add_tx:"New transaction",tx_type:"Type",t_buy:"Buy",t_sell:"Sell",t_deposit:"Deposit",t_withdraw:"Withdraw",
+  search_sec:"Search a company or fund (name or ticker)…",by_qty:"By quantity",by_amt:"By amount (CAD)",price_opt:"Price (empty = that day's close)",
+  fee_cad:"Commission (CAD)",note:"Note",pf_settings:"Portfolio settings",confirm_del_pf:n=>`Delete the portfolio "${n}" and all its transactions? This cannot be undone.`,
+  confirm_del_tx:"Delete this transaction?",realized:"Realized gain",fees:"Fees",cash:"Cash",chart_value:"Value",chart_inv:"Invested",
+  pf_note:"Gains include distributions. If cash is short for a buy, the difference counts as an automatic deposit. FX fees are charged on buys and sells of non-CAD securities (CAD account).",
+  quote_of:(p,d,c)=>`Last close: ${p} ${c} (${d})`,archive:"Archive",vol:"Annual volatility",partial:"partial",
 }};
 let LANG="ar";
 try{const l=localStorage.getItem("lang");if(l in I18N)LANG=l}catch(e){}
 const T=(k,...a)=>{const s=I18N[LANG][k]??I18N.ar[k]??k;return typeof s==="function"?s(...a):s};
 
-const TABS=["overview","sessions","forecasts","prices","inbox","prompts","report","log"];
-const NAMES={gemini:"Gemini",chatgpt:"ChatGPT",claude:"Claude"};
+/* ---------- helpers ---------- */
+const NAMES={gemini:"Gemini",chatgpt:"ChatGPT",claude:"Claude",consensus:"Consensus"};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const pct=(x,d=1)=>x==null?"—":(x>=0?"+":"")+(x*100).toFixed(d)+"%";
-const ag=a=>`<span class="agent a-${esc(a)}">${esc(a)}</span>`;
-const api=p=>fetch(p).then(r=>r.json());
-const post=(p,b)=>fetch(p,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(b||{})}).then(r=>r.json());
-let CFG=null,current="overview",lastRun=null;
-try{current=localStorage.getItem("tab")||"overview"}catch(e){}
-const manualAgents=()=>Object.keys(CFG.agents).filter(a=>CFG.agents[a].provider==="manual");
+const pct=(x,d=1)=>x==null||isNaN(x)?"—":(x>=0?"+":"")+(x*100).toFixed(d)+"%";
+const pctp=(x,d=1)=>x==null?"—":(x*100).toFixed(d)+"%";
+const NF=new Intl.NumberFormat("en-CA",{minimumFractionDigits:2,maximumFractionDigits:2});
+const cad=x=>x==null?"—":`<span class="ltr">${NF.format(x)} $</span>`;
+const num=(x,d=2)=>x==null?"—":Number(x).toLocaleString("en-CA",{maximumFractionDigits:d});
+const cls=x=>x==null?"muted":x>=0?"good":"bad";
+const ag=a=>`<span class="agent a-${esc(a)}">${esc(NAMES[a]||a)}</span>`;
+const label=a=>NAMES[a]||a;
+const store=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const load=(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}};
+async function api(p){const r=await fetch(p);const j=await r.json();if(!r.ok&&j&&j.error)throw new Error(j.error);return j}
+async function post(p,b){const r=await fetch(p,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(b||{})});return r.json()}
+const qs=o=>Object.entries(o).filter(([k,v])=>v!=null&&v!=="").map(([k,v])=>`${k}=${encodeURIComponent(v)}`).join("&");
+let CFG=null,lastRun=null;
 
 function q(f){
   return f.kind==="outperform"?`${f.ticker_a} > ${f.ticker_b}`:`${f.ticker_a} ${f.threshold>=0?">":"<"} ${pct(f.threshold,0)}`;
@@ -188,37 +304,112 @@ function q(f){
 function horizon(f){return Math.round((new Date(f.resolve_date)-new Date(f.start_date))/864e5)}
 function brierCls(b){return b==null?"muted":b<0.22?"good":b>0.25?"bad":"warn"}
 
-function applyLang(){
-  document.documentElement.lang=LANG;
-  document.documentElement.dir=LANG==="ar"?"rtl":"ltr";
-  $("#title").textContent=T("title");
-  $("#runbtn").textContent=T("run");
-  $("#refresh").textContent=T("refresh");
-  $("#langbtn").textContent=T("switch_to");
-  $("#updbtn").textContent=T("check_updates");
-  $("#ver").textContent=CFG&&CFG.version?T("version",CFG.version):"";
-  if(lastRun)runstate(lastRun);
+/* ---------- line chart (SVG, no libraries) ---------- */
+const PALETTE=["#2f6fde","#c96442","#10a37f","#8a5cd6","#d4a017","#e0457b","#1fa2b8","#6b8e23","#ff7f0e","#7f7f7f","#9467bd","#17becf"];
+const CHARTS={};let chartSeq=0;
+function lineChart(lines,{h=280,mode="pct",money=false}={}){
+  // lines: [{name,color,pts:[[date,value]],dash,width}]; mode "pct": each line as cumulative return from its first point
+  lines=lines.filter(l=>l.pts&&l.pts.length>1);
+  if(!lines.length)return `<p class="muted">${T("no_data")}</p>`;
+  const id="ch"+(++chartSeq),W=920,H=h,L=58,R=14,Tp=12,B=26;
+  const data=lines.map(l=>{const b=l.pts[0][1];return{...l,xs:l.pts.map(p=>+new Date(p[0])),ys:l.pts.map(p=>mode==="pct"?p[1]/b-1:p[1])}});
+  let x0=Math.min(...data.map(d=>d.xs[0])),x1=Math.max(...data.map(d=>d.xs[d.xs.length-1]));
+  let y0=Math.min(...data.map(d=>Math.min(...d.ys))),y1=Math.max(...data.map(d=>Math.max(...d.ys)));
+  if(mode==="pct"){y0=Math.min(y0,0);y1=Math.max(y1,0)}
+  if(y1===y0){y1+=1;y0-=1}const pad=(y1-y0)*.06;y0-=pad;y1+=pad;if(x1===x0)x1+=864e5;
+  const X=x=>L+(x-x0)/(x1-x0)*(W-L-R),Y=y=>Tp+(1-(y-y0)/(y1-y0))*(H-Tp-B);
+  const step=(()=>{const r=(y1-y0)/5,m=Math.pow(10,Math.floor(Math.log10(r)));return [1,2,2.5,5,10].map(k=>k*m).find(k=>k>=r)})();
+  let g="";for(let v=Math.ceil(y0/step)*step;v<=y1;v+=step){const y=Y(v);
+    g+=`<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" stroke="var(--grid)" ${Math.abs(v)<step/1e6?'stroke="var(--muted)" stroke-dasharray="3 3"':""}/><text x="${L-6}" y="${y+4}" text-anchor="end">${mode==="pct"?(v*100).toFixed(Math.abs(step)<0.01?1:0)+"%":num(v,0)}</text>`}
+  const span=(x1-x0)/864e5,xt=[];const d0=new Date(x0);
+  if(span>900){for(let y=d0.getFullYear()+1;+new Date(y,0,1)<=x1;y++)xt.push([+new Date(y,0,1),String(y)])}
+  else{const stepM=span>400?3:span>120?1:0;if(stepM){let d=new Date(d0.getFullYear(),d0.getMonth()+1,1);while(+d<=x1){xt.push([+d,d.toISOString().slice(0,7)]);d=new Date(d.getFullYear(),d.getMonth()+stepM,1)}}
+    else{for(let t=x0;t<=x1;t+=Math.max(1,Math.round(span/6))*864e5)xt.push([t,new Date(t).toISOString().slice(5,10)])}}
+  const thin=xt.length>12?xt.filter((_,i)=>i%Math.ceil(xt.length/12)===0):xt;
+  g+=thin.map(([t,s])=>`<line x1="${X(t)}" x2="${X(t)}" y1="${Tp}" y2="${H-B}" stroke="var(--grid)"/><text x="${X(t)}" y="${H-8}" text-anchor="middle">${s}</text>`).join("");
+  const paths=data.map((d,i)=>{const c=d.color||PALETTE[i%PALETTE.length];d.c=c;
+    return `<polyline fill="none" stroke="${c}" stroke-width="${d.width||1.8}" ${d.dash?'stroke-dasharray="5 4"':""} points="${d.xs.map((x,k)=>X(x).toFixed(1)+","+Y(d.ys[k]).toFixed(1)).join(" ")}"/>`}).join("");
+  CHARTS[id]={data,X,Y,x0,x1,L,R,W,H,Tp,B,mode,money};
+  const legend=data.map(d=>`<span><i style="background:${d.c}"></i>${esc(d.name)}</span>`).join("");
+  return `<div class="chartbox" id="${id}"><svg viewBox="0 0 ${W} ${H}" onmousemove="chartHover(event,'${id}')" onmouseleave="chartOut('${id}')">${g}${paths}<line class="cur" x1="0" x2="0" y1="${Tp}" y2="${H-B}" stroke="var(--muted)" visibility="hidden"/></svg><div class="tip"></div><div class="legend">${legend}</div></div>`;
 }
-$("#langbtn").onclick=()=>{LANG=LANG==="ar"?"en":"ar";try{localStorage.setItem("lang",LANG)}catch(e){}
-  applyLang();if(CFG)show(current);};
+function chartHover(ev,id){const c=CHARTS[id];if(!c)return;const box=document.getElementById(id),svg=box.querySelector("svg"),r=svg.getBoundingClientRect();
+  const sx=(ev.clientX-r.left)/r.width*c.W;const t=c.x0+(sx-c.L)/(c.W-c.L-c.R)*(c.x1-c.x0);
+  const rows=c.data.map(d=>{let lo=0,hi=d.xs.length-1;if(t<d.xs[0]||t>d.xs[hi]+5*864e5)return null;while(lo<hi){const m=(lo+hi+1)>>1;if(d.xs[m]<=t)lo=m;else hi=m-1}
+    return [d,lo]}).filter(Boolean);
+  if(!rows.length)return chartOut(id);
+  const ln=svg.querySelector(".cur");ln.setAttribute("x1",sx);ln.setAttribute("x2",sx);ln.setAttribute("visibility","visible");
+  const tip=box.querySelector(".tip");tip.style.display="block";
+  tip.innerHTML=`<b>${new Date(rows[0][0].xs[rows[0][1]]).toISOString().slice(0,10)}</b><br>`+rows.sort((a,b)=>b[0].ys[b[1]]-a[0].ys[a[1]]).map(([d,k])=>`<span style="color:${d.c}">■</span> ${esc(d.name)}: <b>${c.mode==="pct"?pct(d.ys[k]):NF.format(d.ys[k])}</b>`).join("<br>");
+  const px=(ev.clientX-r.left);tip.style.left=(px>r.width/2?px-tip.offsetWidth-12:px+12)+"px";tip.style.top="10px";}
+function chartOut(id){const box=document.getElementById(id);if(!box)return;box.querySelector(".tip").style.display="none";box.querySelector(".cur").setAttribute("visibility","hidden")}
+function spark(pts,w=140,h=30){if(!pts||pts.length<2)return"";const v=pts.map(p=>p[1]),mn=Math.min(...v),mx=Math.max(...v);
+  const d=v.map((y,i)=>`${(i/(v.length-1)*w).toFixed(1)},${(h-(y-mn)/((mx-mn)||1)*h).toFixed(1)}`).join(" ");
+  return `<svg class="spark" width="${w}" height="${h}"><polyline fill="none" stroke="${v[v.length-1]>=v[0]?"var(--good)":"var(--bad)"}" stroke-width="1.5" points="${d}"/></svg>`}
 
-function nav(){
-  $("#nav").innerHTML=TABS.map(id=>`<button data-t="${id}" class="${id===current?"on":""}">${T("tab_"+id)}</button>`).join("");
-  document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>show(b.dataset.t));
+/* ---------- period selector ---------- */
+function periodRange(p,follow){
+  const today=CFG.today,t=new Date(today),iso=d=>d.toISOString().slice(0,10),back=n=>iso(new Date(+t-n*864e5));
+  switch(p.preset){case "follow":return [follow||today,today];case "ytd":return [today.slice(0,4)+"-01-01",today];
+    case "1m":return [back(31),today];case "3m":return [back(92),today];case "1y":return [back(365),today];case "3y":return [back(1096),today];
+    case "5y":return [back(1826),today];case "10y":return [back(3652),today];case "max":return ["2016-01-04",today];
+    case "custom":return [`${p.from}-01-01`,`${p.to}-12-31`<today?`${p.to}-12-31`:today];}
+  return [back(1826),today];
 }
-function show(id){current=id;try{localStorage.setItem("tab",id)}catch(e){}
-  nav();document.querySelectorAll("section").forEach(s=>s.classList.toggle("on",s.id===id));LOAD[id]();}
+function periodBar(key,p,presets,onchange){
+  const years=[];for(let y=2016;y<=+CFG.today.slice(0,4);y++)years.push(y);
+  const html=`<span class="muted">${T("period")}</span><span class="seg" id="${key}-seg">${presets.map(x=>`<button data-p="${x}" class="${p.preset===x?"on":""}">${T("p_"+x)}</button>`).join("")}</span>
+   <span id="${key}-cust" style="display:${p.preset==="custom"?"inline-flex":"none"};gap:6px;align-items:center">
+   <select id="${key}-from">${years.map(y=>`<option ${y==p.from?"selected":""}>${y}</option>`).join("")}</select>→
+   <select id="${key}-to">${years.map(y=>`<option ${y==p.to?"selected":""}>${y}</option>`).join("")}</select></span>`;
+  setTimeout(()=>{document.querySelectorAll(`#${key}-seg button`).forEach(b=>b.onclick=()=>{p.preset=b.dataset.p;onchange()});
+    const f=$(`#${key}-from`),t=$(`#${key}-to`);if(f){f.onchange=()=>{p.from=+f.value;if(p.to<p.from)p.to=p.from;onchange()};t.onchange=()=>{p.to=+t.value;if(p.to<p.from)p.from=p.to;onchange()}}},0);
+  return html;
+}
 
-const LOAD={
-async overview(){
+/* ---------- navigation: menu → sub-tab → item (investor / portfolio) ---------- */
+const MENUS={lab:["overview","sessions","forecasts","prices"],picks:["recs","perf","sessions","forecasts"],
+  inv:["compare","stocks","etf"],pf:["all","new"],sys:["inbox","prompts","report","log"]};
+let R=load("route",{m:"lab",s:"overview",i:null});
+function parseHash(){const h=location.hash.slice(1).split("/").map(decodeURIComponent);
+  if(h[0]&&MENUS[h[0]])R={m:h[0],s:h[1]||MENUS[h[0]][0],i:h[2]||null}}
+function go(m,s,i){R={m,s:s||MENUS[m][0],i:i??null};store("route",R);
+  const h="#"+[R.m,R.s,R.i].filter(x=>x!=null).map(encodeURIComponent).join("/");if(location.hash!==h)history.replaceState(null,"",h);render()}
+let INV_LIST=null,PF_LIST=null;
+async function drawNav(){
+  $("#menu").innerHTML=Object.keys(MENUS).filter(m=>m!=="picks"||CFG.tracks.includes("stocks")).map(m=>`<button data-m="${m}" class="${m===R.m?"on":""}">${T("m_"+m)}</button>`).join("");
+  document.querySelectorAll("#menu button").forEach(b=>b.onclick=()=>go(b.dataset.m,load("sub_"+b.dataset.m,null)));
+  let subs=MENUS[R.m];
+  if(R.m==="pf"){PF_LIST=PF_LIST||await api("/api/portfolios");subs=["all",...PF_LIST.map(p=>"p"+p.id),"new"]}
+  $("#sub").innerHTML=subs.map(s=>{const lbl=s[0]==="p"&&R.m==="pf"&&/^p\d+$/.test(s)?esc((PF_LIST.find(p=>"p"+p.id===s)||{}).name):T("s_"+s);
+    return `<button data-s="${s}" class="${s===R.s?"on":""}">${lbl}</button>`}).join("");
+  document.querySelectorAll("#sub button").forEach(b=>b.onclick=()=>{store("sub_"+R.m,b.dataset.s);go(R.m,b.dataset.s,R.m==="inv"?load("inv_"+b.dataset.s,null):null)});
+  $("#items").innerHTML="";
+  if(R.m==="inv"&&(R.s==="stocks"||R.s==="etf")){
+    INV_LIST=INV_LIST||(await api("/api/investors?"+qs({start:CFG.today,end:CFG.today}))).investors;
+    const list=INV_LIST.filter(x=>x.list===R.s);
+    if(!R.i||!list.find(x=>x.id===R.i))R.i=load("inv_"+R.s,null);
+    if(!R.i||!list.find(x=>x.id===R.i))R.i=list[0]&&list[0].id;
+    $("#items").innerHTML=list.map(x=>`<button data-i="${x.id}" class="${x.id===R.i?"on":""}">${esc(short(x.name))}</button>`).join("");
+    document.querySelectorAll("#items button").forEach(b=>b.onclick=()=>{store("inv_"+R.s,b.dataset.i);go("inv",R.s,b.dataset.i)});
+  }
+}
+const short=n=>n.replace(/\s*\(.*?\)\s*/g," ").split(/ [–-] /)[0].trim();
+async function render(){
+  await drawNav();
+  const v=$("#view");v.innerHTML=`<p class="muted">${T("loading")}</p>`;
+  const key=R.m+"."+(R.m==="pf"&&/^p\d+$/.test(R.s)?"one":R.s);
+  try{await (VIEWS[key]||VIEWS["lab.overview"])(v)}catch(e){v.innerHTML=`<div class="card bad">${T("error")}: ${esc(e.message||e)}</div>`;console.error(e)}
+}
+
+/* ---------- views ---------- */
+const VIEWS={};
+VIEWS["lab.overview"]=async v=>{
   const o=await api("/api/overview");
-  const f=o.forecasts;
+  const f=o.forecasts,tm=(o.this_month.etf||{}),sbd=o.scoreboard.etf||{};
   const status=o.agents.map(a=>`<tr><td>${ag(a)}</td><td>${CFG.agents[a].provider==="manual"?T("method_manual"):T("method_api")}</td>
-     <td>${o.this_month[a]?`<span class="good">✓ ${esc(o.this_month[a].slice(0,10))}</span>`:`<span class="warn">${T("not_yet")}</span>`}</td></tr>`).join("");
-  const sb=Object.entries(o.scoreboard).sort().map(([a,v])=>`<tr><td>${ag(a)}</td>
-     <td class="ltr ${brierCls(v.core_brier)}">${v.core_brier==null?"—":v.core_brier.toFixed(3)}</td><td>${v.core_n}</td>
-     <td class="ltr ${brierCls(v.all_brier)}">${v.all_brier==null?"—":v.all_brier.toFixed(3)}</td><td>${v.all_n}</td><td>${v.pending}</td></tr>`).join("");
-  $("#overview").innerHTML=`
+     <td>${tm[a]?`<span class="good">✓ ${esc(tm[a].slice(0,10))}</span>`:`<span class="warn">${T("not_yet")}</span>`}</td></tr>`).join("");
+  v.innerHTML=`
   <div class="grid">
    <div class="card kpi"><div class="v">${o.sessions}</div><div class="l">${T("kpi_sessions")}</div></div>
    <div class="card kpi"><div class="v">${o.responses}</div><div class="l">${T("kpi_responses")}</div></div>
@@ -229,23 +420,28 @@ async overview(){
   </div>
   ${f.overdue?`<div class="card warn">${T("overdue",f.overdue)}</div>`:""}
   <div class="card"><h3>${T("this_month",esc(o.month))}</h3><div class="tablewrap"><table><tr><th>${T("th_agent")}</th><th>${T("th_method")}</th><th>${T("th_status")}</th></tr>${status}</table></div></div>
-  <div class="card"><h3>${T("scoreboard")}</h3>
+  ${scoreCard(sbd)}`;
+  runstate(o.run);
+};
+function scoreCard(sbd){
+  const sb=Object.entries(sbd).sort().map(([a,v])=>`<tr><td>${ag(a)}</td>
+     <td class="ltr ${brierCls(v.core_brier)}">${v.core_brier==null?"—":v.core_brier.toFixed(3)}</td><td>${v.core_n}</td>
+     <td class="ltr ${brierCls(v.all_brier)}">${v.all_brier==null?"—":v.all_brier.toFixed(3)}</td><td>${v.all_n}</td><td>${v.pending}</td></tr>`).join("");
+  return `<div class="card"><h3>${T("scoreboard")}</h3>
    <div class="tablewrap"><table><tr><th>${T("th_agent")}</th><th>${T("th_core_brier")}</th><th>${T("th_n")}</th><th>${T("th_all_brier")}</th><th>${T("th_n")}</th><th>${T("th_pending")}</th></tr>${sb||`<tr><td colspan=6 class="muted">${T("no_resolved")}</td></tr>`}</table></div>
    <p class="muted">${T("caveat")}</p></div>`;
-  runstate(o.run);
-},
-async sessions(){
-  const ss=await api("/api/sessions");
-  if(!ss.length){$("#sessions").innerHTML=`<div class="card muted">${T("no_sessions")}</div>`;return}
-  const sel=`<div class="row"><label>${T("month_label")}</label><select id="msel">${ss.map((s,i)=>`<option value="${i}">${esc(s.created_at.slice(0,7))}</option>`).join("")}</select></div>`;
-  $("#sessions").innerHTML=sel+`<div id="sbody"></div>`;
+}
+async function sessionsView(v,track){
+  const ss=await api("/api/sessions?track="+track);
+  if(!ss.length){v.innerHTML=`<div class="card muted">${track==="stocks"?T("no_picks"):T("no_sessions")}</div>`;return}
+  v.innerHTML=`<div class="row"><label>${T("month_label")}</label><select id="msel">${ss.map((s,i)=>`<option value="${i}">${esc(s.created_at.slice(0,7))}</option>`).join("")}</select></div><div id="sbody"></div>`;
   const draw=i=>{const s=ss[i];
-    $("#sbody").innerHTML=`<div class="card"><h3>${T("question")}</h3><p class="ltr" style="text-align:left">${esc(s.question)}</p></div>
+    $("#sbody").innerHTML=`<div class="card"><h3>${T("question")}</h3><p class="ltr" style="text-align:left;white-space:pre-line">${esc(s.question)}</p></div>
     <div class="agents">${s.responses.map(r=>`<div class="card">
       <h3>${ag(r.agent)} <span class="chip ltr">${esc(r.model)}</span> <span class="muted ltr">${esc(r.created_at.slice(0,16).replace("T"," "))}</span></h3>
       ${r.analysis?`<p class="ltr" style="text-align:left">${esc(r.analysis)}</p>`:""}
       ${r.risks?`<p class="ltr muted" style="text-align:left"><b>Wrong if:</b> ${esc(r.risks)}</p>`:""}
-      <h3>${T("allocation")}</h3><table>${r.allocation.map(a=>`<tr><td class="ltr">${esc(a.ticker)}</td><td style="width:60%"><div class="bar"><i style="width:${a.weight*100}%"></i></div></td><td class="ltr">${(a.weight*100).toFixed(0)}%</td></tr>`).join("")}</table>
+      <h3>${T("allocation")}</h3><table>${r.allocation.map(a=>`<tr><td class="ltr"><b>${esc(a.ticker)}</b>${a.name&&track==="stocks"?` <span class="muted">${esc(a.name)}</span>`:""}</td><td style="width:45%"><div class="bar"><i style="width:${a.weight*100}%"></i></div></td><td class="ltr">${(a.weight*100).toFixed(0)}%</td></tr>`).join("")}</table>
       <h3 style="margin-top:12px">${T("forecasts_n",r.forecasts.length)}</h3><div class="tablewrap"><table>
       <tr><th>${T("question")}</th><th>${T("th_horizon")}</th><th>p</th><th>${T("th_outcome")}</th></tr>
       ${r.forecasts.map(f=>`<tr><td class="ltr">${esc(q(f))}</td><td>${horizon(f)}${T("days_short")}</td><td class="ltr">${f.probability.toFixed(2)}</td>
@@ -254,12 +450,12 @@ async sessions(){
       ${r.raw_text?`<details><summary>${T("raw")}</summary><pre>${esc(r.raw_text)}</pre></details>`:""}
     </div>`).join("")}</div>`;};
   $("#msel").onchange=e=>draw(+e.target.value);draw(0);
-},
-async forecasts(){
-  const fs=await api("/api/forecasts");
+}
+async function forecastsView(v,track){
+  const fs=await api("/api/forecasts?track="+track);
   const agents=[...new Set(fs.map(f=>f.agent))].sort();
-  $("#forecasts").innerHTML=`<div class="row">
-    <select id="fa"><option value="">${T("all_agents")}</option>${agents.map(a=>`<option>${esc(a)}</option>`).join("")}</select>
+  v.innerHTML=`<div class="row">
+    <select id="fa"><option value="">${T("all_agents")}</option>${agents.map(a=>`<option value="${esc(a)}">${esc(label(a))}</option>`).join("")}</select>
     <select id="fs"><option value="">${T("all_states")}</option><option value="p">${T("opt_pending")}</option><option value="r">${T("opt_resolved")}</option></select>
     <label><input type="checkbox" id="fc"> ${T("core_only")}</label><span class="muted" id="fn"></span></div>
     <div class="card tablewrap"><table id="ft"></table></div>`;
@@ -273,33 +469,287 @@ async forecasts(){
       <td class="ltr">${prog}</td><td>${f.outcome==null?`<span class="muted">${T("pending_cell")}</span>`:f.outcome?"✓":"✗"}</td>
       <td class="ltr ${brierCls(f.brier)}">${f.brier==null?"—":f.brier.toFixed(3)}</td></tr>`}).join("");};
   ["#fa","#fs","#fc"].forEach(s=>$(s).onchange=draw);draw();
-},
-async prices(){
+}
+VIEWS["lab.sessions"]=v=>sessionsView(v,"etf");
+VIEWS["lab.forecasts"]=v=>forecastsView(v,"etf");
+VIEWS["picks.sessions"]=v=>sessionsView(v,"stocks");
+VIEWS["picks.forecasts"]=v=>forecastsView(v,"stocks");
+VIEWS["lab.prices"]=async v=>{
   const ps=await api("/api/prices");
   const ret=(pts,days)=>{if(pts.length<2)return null;const last=pts[pts.length-1];const t=new Date(last[0])-days*864e5;
     const base=pts.find(p=>new Date(p[0])>=t);return base?last[1]/base[1]-1:null};
-  const spark=pts=>{if(pts.length<2)return"";const v=pts.slice(-180).map(p=>p[1]),mn=Math.min(...v),mx=Math.max(...v),w=160,h=34;
+  const sp=pts=>{if(pts.length<2)return"";const v=pts.slice(-180).map(p=>p[1]),mn=Math.min(...v),mx=Math.max(...v),w=160,h=34;
     const d=v.map((y,i)=>`${(i/(v.length-1)*w).toFixed(1)},${(h-(y-mn)/((mx-mn)||1)*h).toFixed(1)}`).join(" ");
     return `<svg class="spark" width="${w}" height="${h}"><polyline fill="none" stroke="var(--accent)" stroke-width="1.5" points="${d}"/></svg>`};
   const core=CFG.core_forecasts.map(c=>`<li><span class="ltr">${esc(q(c))}</span> — ${c.horizon_days} ${T("days")}</li>`).join("");
-  $("#prices").innerHTML=`<div class="card"><h3>${T("funds_title")} <span class="ltr">${esc(CFG.benchmark)}</span></h3>
+  v.innerHTML=`<div class="card"><h3>${T("funds_title")} <span class="ltr">${esc(CFG.benchmark)}</span></h3>
    <div class="tablewrap"><table><tr><th>${T("th_fund")}</th><th>${T("th_last")}</th><th>${T("th_date")}</th><th>${T("th_1m")}</th><th>${T("th_3m")}</th><th>${T("th_1y")}</th><th>${T("th_6m")}</th></tr>
-   ${CFG.universe.map(t=>{const p=ps[t]||[];const l=p[p.length-1];
+   ${CFG.universe.map(t=>{const p=ps[t]||[];const l=p[p.length-1];const old=l&&(Date.now()-new Date(l[0]))>6*864e5;
      return `<tr><td class="ltr"><b>${esc(t)}</b>${t===CFG.benchmark?` <span class="chip">${T("bench_chip")}</span>`:""}</td>
-     <td class="ltr">${t==="CASH"?"—":l?l[1].toFixed(2):T("no_data")}</td><td class="ltr${l&&(Date.now()-new Date(l[0]))>6*864e5?" bad":""}">${l?esc(l[0]):"—"}${l&&(Date.now()-new Date(l[0]))>6*864e5?` <span class="chip">${T("stale")}</span>`:""}</td>
+     <td class="ltr">${t==="CASH"?"—":l?l[1].toFixed(2):T("no_data")}</td><td class="ltr${old?" bad":""}">${l?esc(l[0]):"—"}${old?` <span class="chip">${T("stale")}</span>`:""}</td>
      ${[30,91,365].map(d=>{const r=ret(p,d);return `<td class="ltr ${r==null?"muted":r>=0?"good":"bad"}">${pct(r)}</td>`}).join("")}
-     <td>${spark(p)}</td></tr>`}).join("")}</table></div>
+     <td>${sp(p)}</td></tr>`}).join("")}</table></div>
    <p class="muted">${T("prices_note")}</p></div>
    <div class="card"><h3>${T("core_title")}</h3><ul>${core}</ul>
    <p class="muted">${T("horizons_note",CFG.horizons_days.join(", "),CFG.min_forecasts_per_agent)}</p></div>`;
-},
-async inbox(){
+};
+
+/* --- AI stock picks --- */
+let PICKS=null;
+function pfFromForm(id,source,ref){
+  return `<div class="formgrid" style="margin-top:10px"><label>${T("amount_cad")}<input type="number" id="${id}-amt" value="1000" min="1"></label>
+   <label>${T("start_date")}<input type="date" id="${id}-d" value="${CFG.today}" max="${CFG.today}"></label>
+   <button class="btn sec" data-pf="${id}" data-src="${source}" data-ref="${esc(ref)}">${T(source==="investor"?"copy_to_pf":"to_portfolio")}</button><span id="${id}-msg"></span></div>`;
+}
+function bindPfFrom(){document.querySelectorAll("[data-pf]").forEach(b=>b.onclick=async()=>{const id=b.dataset.pf;b.disabled=true;
+  const r=await post("/api/portfolio/from",{source:b.dataset.src,id:b.dataset.ref,amount:+$(`#${id}-amt`).value,date:$(`#${id}-d`).value});
+  b.disabled=false;if(r.error){$(`#${id}-msg`).innerHTML=`<span class="bad">${esc(r.error)}</span>`;return}
+  PF_LIST=null;$(`#${id}-msg`).innerHTML=`<span class="good">✓ ${T("created_pf")}</span> <button class="link" onclick="go('pf','p${r.id}')">→</button>${r.errors&&r.errors.length?` <span class="warn ltr">${esc(r.errors.join("; "))}</span>`:""}`})}
+VIEWS["picks.recs"]=async v=>{
+  PICKS=await api("/api/picks");
+  if(!PICKS.months.length){v.innerHTML=`<div class="note">${T("picks_intro")}</div><div class="card muted">${T("no_picks")}</div>`;return}
+  v.innerHTML=`<div class="note">${T("picks_intro")}</div><div class="row"><label>${T("month_label")}</label><select id="pm">${PICKS.months.map((m,i)=>`<option value="${i}">${esc(m.month)}</option>`).join("")}</select></div><div id="pbody"></div>`;
+  const draw=i=>{const m=PICKS.months[i],ags=Object.keys(m.agents).filter(a=>a!=="consensus").sort();
+    const cons=m.agents.consensus||(ags.length===1?m.agents[ags[0]]:null);
+    const allT={};ags.forEach(a=>m.agents[a].allocation.forEach(x=>{(allT[x.ticker]=allT[x.ticker]||{...x,by:{}}).by[a]=x.weight}));
+    const rows=(cons?cons.allocation:Object.values(allT)).map(x=>({...x,...(allT[x.ticker]||{}),weight:x.weight}));
+    $("#pbody").innerHTML=`<div class="card"><h3>${T("consensus_title")}</h3><div class="tablewrap"><table>
+      <tr><th>${T("th_ticker")}</th><th>${T("th_company")}</th><th>${T("th_weight")}</th><th></th><th>${T("th_agents_n")}</th>${ags.map(a=>`<th>${ag(a)}</th>`).join("")}</tr>
+      ${rows.map(x=>`<tr><td class="ltr"><b>${esc(x.ticker)}</b></td><td>${esc(x.name||"")} <span class="muted ltr">${esc(x.currency||"")}</span></td>
+       <td class="ltr">${pctp(x.weight,1)}</td><td style="width:22%"><div class="bar"><i style="width:${x.weight*100}%"></i></div></td>
+       <td>${Object.keys(x.by||{}).length}/${ags.length}</td>${ags.map(a=>`<td class="ltr">${x.by&&x.by[a]!=null?pctp(x.by[a],0):"—"}</td>`).join("")}</tr>`).join("")}</table></div>
+      ${cons?pfFromForm("pcons","picks",cons.id):""}</div>
+      <div class="agents">${ags.map(a=>{const r=m.agents[a];return `<div class="card"><h3>${ag(a)} <span class="chip ltr">${esc(r.model)}</span> <span class="muted ltr">${esc(r.created_at.slice(0,10))}</span></h3>
+       ${r.analysis?`<p class="ltr" style="text-align:left">${esc(r.analysis)}</p>`:""}
+       ${r.risks?`<p class="ltr muted" style="text-align:left"><b>${T("wrong_if")}</b> ${esc(r.risks)}</p>`:""}
+       <table>${r.allocation.map(x=>`<tr><td class="ltr"><b>${esc(x.ticker)}</b><br><span class="muted">${esc(x.name||"")}</span></td><td class="ltr">${pctp(x.weight,0)}</td><td class="ltr muted" style="text-align:left;font-size:13px">${esc(x.thesis||"")}</td></tr>`).join("")}</table>
+       ${pfFromForm("pa"+r.id,"picks",r.id)}</div>`}).join("")}</div>`;
+    bindPfFrom();};
+  $("#pm").onchange=e=>draw(+e.target.value);draw(0);
+};
+VIEWS["picks.perf"]=async v=>{
+  PICKS=PICKS||await api("/api/picks");
+  const P=PICKS,cmp=[P.benchmark,...P.compare];
+  const months=[...new Set(P.performance.map(x=>x.month))].reverse();
+  v.innerHTML=`<div class="card"><h3>${T("perf_title",esc(P.benchmark))}</h3>
+    ${months.length?`<div class="row"><label>${T("month_label")}</label><select id="pfm">${months.map(m=>`<option>${m}</option>`).join("")}</select></div><div id="pfc"></div>`:""}
+    <div class="tablewrap"><table><tr><th>${T("th_month")}</th><th>${T("th_agent")}</th><th>${T("th_from")}</th><th>${T("th_return")}</th>${cmp.map(b=>`<th class="ltr">${esc(b)}</th>`).join("")}</tr>
+    ${P.performance.slice().reverse().map(x=>`<tr><td class="ltr">${x.month}</td><td>${ag(x.agent)}</td><td class="ltr">${x.start}</td><td class="ltr ${cls(x.ret)}">${pct(x.ret)}</td>${cmp.map(b=>`<td class="ltr ${cls(x.bench[b])}">${pct(x.bench[b])}</td>`).join("")}</tr>`).join("")||`<tr><td colspan="9" class="muted">${T("no_perf")}</td></tr>`}</table></div>
+    <p class="muted">${T("picks_bench_note",P.fx_fee)} ${T("no_perf")}</p></div>${scoreCard(P.scoreboard)}`;
+  const drawC=m=>{const ls=P.performance.filter(x=>x.month===m&&x.series.length>1).map(x=>({name:label(x.agent),color:getComputedStyle(document.body).getPropertyValue("--"+x.agent).trim()||undefined,pts:x.series}));
+    $("#pfc").innerHTML=ls.length?lineChart(ls):`<p class="muted">${T("no_perf")}</p>`};
+  if(months.length){$("#pfm").onchange=e=>drawC(e.target.value);drawC(months[0])}
+};
+
+/* --- investors --- */
+let INVP=load("invp",{preset:"5y",from:2021,to:+new Date().getFullYear(),amount:1000});
+let INV_SEL=load("inv_sel",null),INV_SORT=load("inv_sort",{k:"total",d:-1}),INV_F=load("inv_f",{list:"",q:""});
+const verdictChip=v=>v?`<span class="chip ${v==="KEEP"?"goodc":"warnc"}">${esc(v)}</span>`:"";
+VIEWS["inv.compare"]=async v=>{
+  const [s,e]=periodRange(INVP);
+  v.innerHTML=`<div class="note">${T("inv_intro")}</div><div class="note">${T("hindsight_note")}</div>
+   <div class="row">${periodBar("ip",INVP,["ytd","1y","3y","5y","10y","max","custom"],()=>{store("invp",INVP);render()})}
+   <label class="muted">${T("copy_amount")} <input type="number" id="iamt" value="${INVP.amount}" min="1"></label></div><div id="ibody"><p class="muted">${T("loading")}</p></div>`;
+  $("#iamt").onchange=e=>{INVP.amount=+e.target.value||1000;store("invp",INVP);render()};
+  const o=await api("/api/investors?"+qs({start:s,end:e,amount:INVP.amount}));
+  if(!o.investors.some(x=>x.series.length)){$("#ibody").innerHTML=`<div class="card warn">${T("no_inv")}</div>`;return}
+  if(!INV_SEL)INV_SEL=o.investors.filter(x=>x.metrics.total!=null).sort((a,b)=>b.score-a.score).slice(0,5).map(x=>x.id);
+  const draw=()=>{
+    const k=INV_SORT.k,val=x=>k==="name"?x.name.toLowerCase():k==="score"?x.score:k==="five_y"?x.five_y:k==="live"?x.live.total:k==="excess"?x.excess:x.metrics[k];
+    const rows=o.investors.filter(x=>(!INV_F.list||x.list===INV_F.list)&&(!INV_F.q||x.name.toLowerCase().includes(INV_F.q.toLowerCase())))
+      .sort((a,b)=>{const A=val(a),B=val(b);if(A==null)return 1;if(B==null)return -1;return (A>B?1:A<B?-1:0)*INV_SORT.d});
+    const lines=o.investors.filter(x=>INV_SEL.includes(x.id)).map(x=>({name:short(x.name),pts:x.series}))
+      .concat(Object.entries(o.benchmarks).map(([b,d])=>({name:b,pts:d.series,dash:true,color:b===CFG.benchmark?"#444":"#999",width:1.4})));
+    const th=(k2,l)=>`<th class="sort" data-k="${k2}">${l}${INV_SORT.k===k2?(INV_SORT.d>0?" ▲":" ▼"):""}</th>`;
+    $("#ibody").innerHTML=`<div class="card"><h3>${T("chart_compare")} <span class="muted ltr" style="font-weight:400">${esc(o.start)} → ${esc(o.end)}</span></h3>${lineChart(lines,{h:320})}</div>
+    <div class="card"><div class="row"><span class="seg" id="ilist">${["","stocks","etf"].map(l=>`<button data-l="${l}" class="${INV_F.list===l?"on":""}">${T("list_"+(l||"all"))}</button>`).join("")}</span>
+     <input id="iq" placeholder="${esc(T("search_name"))}" value="${esc(INV_F.q)}"></div>
+     <div class="tablewrap"><table><tr><th>${T("in_chart")}</th>${th("name",T("th_investor"))}<th>${T("th_style")}</th>${th("score",T("th_score"))}<th>${T("th_verdict")}</th>
+      ${th("five_y",T("th_reported5"))}${th("total",T("th_total"))}${th("cagr",T("th_cagr"))}${th("maxdd",T("th_maxdd"))}${th("excess",T("th_vs"))}${th("live",T("th_live"))}<th>${T("th_top")}</th></tr>
+     ${rows.map(x=>`<tr class="${INV_SEL.includes(x.id)?"hl":""}"><td><input type="checkbox" data-sel="${x.id}" ${INV_SEL.includes(x.id)?"checked":""}></td>
+      <td><button class="link" data-go="${x.list}/${x.id}">${esc(short(x.name))}</button><br><span class="muted" style="font-size:12px">${esc(x.kind)} · ${T("th_since")} ${esc(x.since)}</span></td>
+      <td style="font-size:13px">${esc(x.style)}</td><td class="ltr">${x.score}</td><td>${verdictChip(x.verdict)}</td>
+      <td class="ltr ${cls(x.five_y)}">${pct(x.five_y,0)}</td>
+      <td class="ltr ${cls(x.metrics.total)}">${pct(x.metrics.total)}${x.hindsight?` <span class="chip warnc" title="${esc(T("hindsight_note"))}">${T("chip_hind")}</span>`:""}</td>
+      <td class="ltr">${pct(x.metrics.cagr)}</td><td class="ltr bad">${pct(x.metrics.maxdd)}</td>
+      <td class="ltr ${cls(x.excess)}">${pct(x.excess)} <span class="muted">${esc(x.benchmark)}</span></td>
+      <td class="ltr ${cls(x.live.total)}">${x.live.total==null?`<span class="muted">${esc(x.follow_date)}</span>`:pct(x.live.total)}</td>
+      <td class="ltr muted" style="font-size:12.5px">${esc(x.top.join(", "))}</td></tr>`).join("")}</table></div></div>`;
+    document.querySelectorAll("th.sort").forEach(h=>h.onclick=()=>{INV_SORT=INV_SORT.k===h.dataset.k?{k:h.dataset.k,d:-INV_SORT.d}:{k:h.dataset.k,d:h.dataset.k==="name"?1:-1};store("inv_sort",INV_SORT);draw()});
+    document.querySelectorAll("[data-sel]").forEach(c=>c.onchange=()=>{INV_SEL=c.checked?[...INV_SEL,c.dataset.sel]:INV_SEL.filter(x=>x!==c.dataset.sel);store("inv_sel",INV_SEL);draw()});
+    document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{const [l,id]=b.dataset.go.split("/");store("inv_"+l,id);go("inv",l,id)});
+    document.querySelectorAll("#ilist button").forEach(b=>b.onclick=()=>{INV_F.list=b.dataset.l;store("inv_f",INV_F);draw()});
+    const iq=$("#iq");iq.oninput=()=>{INV_F.q=iq.value;store("inv_f",INV_F);const p=iq.selectionStart;draw();const n=$("#iq");n.focus();n.setSelectionRange(p,p)};
+  };
+  draw();
+};
+let INVD=load("invd",{preset:"5y",from:2021,to:+new Date().getFullYear()});
+async function investorView(v){
+  const id=R.i;if(!id){v.innerHTML="";return}
+  const fol=(INV_LIST.find(x=>x.id===id)||{}).follow_date;
+  const [s,e]=periodRange(INVD,fol);
+  const d=await api("/api/investor?"+qs({id,start:s,end:e,amount:INVP.amount}));
+  const inv=d.investor,last=d.snapshots[d.snapshots.length-1]||[null,[]],hs=last[1];
+  const cover=hs.filter(h=>h.ticker!=="CASH").reduce((a,h)=>a+h.weight,0)+(hs.find(h=>h.ticker==="CASH")||{weight:0}).weight;
+  const tot=hs.reduce((a,h)=>a+h.weight,0)||1;
+  const L=d.lines,copy=L.copy.metrics,bm=inv.benchmarks[0],bmm=(L[bm]||{}).metrics||{};
+  const names={copy:T("copy_line")};if(inv.proxy)names[inv.proxy]=`${inv.proxy} — ${T("proxy_line")}`;
+  const lines=Object.entries(L).map(([k,x],i)=>({name:names[k]||k,pts:x.series,color:k==="copy"?"#2f6fde":k===inv.proxy?"#c96442":k===CFG.benchmark?"#444":["#999","#bbb"][i%2],dash:k!=="copy"&&k!==inv.proxy,width:k==="copy"?2.4:1.5}));
+  const years=[...new Set(Object.values(L).flatMap(x=>Object.keys(x.yearly)).concat(Object.keys(inv.reported).map(y=>y.slice(0,4))))].sort().reverse();
+  const live=d.live;
+  v.innerHTML=`<div class="card"><div class="row" style="margin:0"><h3 style="margin:0;font-size:18px">${esc(inv.name)}</h3>${verdictChip(inv.verdict)}<span class="chip">${T("th_score")} ${inv.score}/100</span>
+     <span class="chip">${esc(inv.kind)}</span><span class="chip">${esc(inv.style)}</span><span class="chip">${T("th_since")} ${esc(inv.since)}</span>
+     ${inv.url?`<a href="${esc(inv.url)}" target="_blank" rel="noopener noreferrer" class="chip">${T("where_track")} ↗</a>`:""}</div>
+     <p class="ltr" style="text-align:left;margin:10px 0 4px"><b>${T("record")}:</b> ${esc(inv.record)}</p>
+     <p class="ltr muted" style="text-align:left;margin:4px 0"><b>${T("caveat_l")}:</b> ${esc(inv.caveat)}</p>
+     ${inv.notes?`<p class="ltr muted" style="text-align:left;margin:4px 0">${esc(inv.notes)}</p>`:""}</div>
+   <div class="card"><h3>${T("following_since",esc(inv.follow_date))}</h3>
+     <div class="row"><label class="muted">${T("follow_date")} <input type="date" id="fdate" value="${esc(inv.follow_date)}" max="${CFG.today}"></label><button class="btn sec sm" id="fsave">${T("save")}</button><span id="fmsg"></span></div>
+     ${live.series.length>1?`<div class="grid"><div class="card kpi"><div class="v ltr ${cls(live.metrics.total)}">${pct(live.metrics.total)}</div><div class="l">${T("th_live")}</div></div>
+       <div class="card kpi"><div class="v ltr bad">${pct(live.metrics.maxdd)}</div><div class="l">${T("th_maxdd")}</div></div></div>${lineChart([{name:T("copy_line"),pts:live.series}],{h:200})}`
+       :`<p class="muted">${T("live_empty",esc(inv.follow_date))}</p>`}
+     ${pfFromForm("ic","investor",inv.id)}</div>
+   <div class="row">${periodBar("id",INVD,["follow","ytd","1y","3y","5y","10y","max","custom"],()=>{store("invd",INVD);render()})}</div>
+   ${d.hindsight?`<div class="note">${T("hindsight_note")}</div>`:""}
+   <div class="grid">
+    <div class="card kpi"><div class="v ltr ${cls(copy.total)}">${pct(copy.total)}</div><div class="l">${T("copy_line")} · ${T("th_total")}</div></div>
+    <div class="card kpi"><div class="v ltr">${pct(copy.cagr)}</div><div class="l">${T("th_cagr")}</div></div>
+    <div class="card kpi"><div class="v ltr bad">${pct(copy.maxdd)}</div><div class="l">${T("th_maxdd")}</div></div>
+    <div class="card kpi"><div class="v ltr ${cls(bmm.total)}">${pct(bmm.total)}</div><div class="l">${esc(bm)}</div></div>
+    ${inv.proxy&&L[inv.proxy]?`<div class="card kpi"><div class="v ltr ${cls(L[inv.proxy].metrics.total)}">${pct(L[inv.proxy].metrics.total)}</div><div class="l">${esc(inv.proxy)} · ${T("proxy_line")}</div></div>`:""}
+    <div class="card kpi"><div class="v ltr">${pctp(copy.vol)}</div><div class="l">${T("vol")}</div></div>
+   </div>
+   <div class="card">${lineChart(lines,{h:320})}<p class="muted">${T("fees_paid",d.fees)}${d.warnings.length?` · <span class="warn ltr">${esc(d.warnings.join(" · "))}</span>`:""}</p></div>
+   <div class="card"><h3>${T("yearly")}</h3><div class="tablewrap"><table><tr><th>${T("th_year")}</th><th>${T("th_reported")}</th><th>${T("th_copy")}</th>${Object.keys(L).filter(k=>k!=="copy").map(k=>`<th class="ltr">${esc(k)}</th>`).join("")}</tr>
+    ${years.map(y=>{const rep=inv.reported[y]??inv.reported[y+" YTD"];const part=(y===s.slice(0,4)&&s.slice(5)!=="01-01")||(y===e.slice(0,4)&&e.slice(5)!=="12-31");
+      return `<tr><td class="ltr">${y}${inv.reported[y+" YTD"]!=null?" YTD":""}${part?` <span class="chip">${T("partial")}</span>`:""}</td><td class="ltr ${cls(rep)}"><b>${pct(rep)}</b></td>
+      <td class="ltr ${cls(L.copy.yearly[y])}">${pct(L.copy.yearly[y])}</td>${Object.keys(L).filter(k=>k!=="copy").map(k=>`<td class="ltr ${cls(L[k].yearly[y])}">${pct(L[k].yearly[y])}</td>`).join("")}</tr>`}).join("")}</table></div></div>
+   <div class="card"><h3>${T("holdings")} <span class="muted ltr" style="font-weight:400">${esc(last[0])}</span></h3>
+    <div class="tablewrap"><table><tr><th>${T("th_ticker")}</th><th>${T("th_company")}</th><th>${T("th_real_w")}</th><th>${T("th_copy_w")}</th><th>${T("th_last")}</th></tr>
+    ${hs.map(h=>`<tr><td class="ltr"><b>${esc(h.ticker)}</b></td><td>${esc(h.name||"")} ${h.estimated?`<span class="chip warnc">${T("estimated")}</span>`:""}</td>
+      <td class="ltr">${pctp(h.weight,1)}</td><td class="ltr">${pctp(h.weight/tot,1)}</td><td class="ltr">${h.last==null?"—":num(h.last)} <span class="muted">${esc(h.currency||"")}</span></td></tr>`).join("")}</table></div>
+    <p class="muted">${T("coverage",cover)}</p>
+    <details><summary>${T("snapshots")} (${d.snapshots.length})</summary>${d.snapshots.map(([a,h])=>`<div class="row" style="margin:6px 0"><span class="ltr chip">${esc(a)}</span><span class="ltr muted">${esc(h.map(x=>x.ticker+" "+pctp(x.weight,1)).join(", "))}</span>${d.snapshots.length>1?`<button class="btn sec sm" data-delsnap="${esc(a)}">${T("delete")}</button>`:""}</div>`).join("")}</details>
+    <details style="margin-top:8px"><summary>${T("new_snapshot")}</summary><p class="muted">${T("snapshot_help")}</p>
+     <div class="row"><label class="muted">${T("as_of")} <input type="date" id="snd" value="${CFG.today}" max="${CFG.today}"></label></div>
+     <table id="snt">${hs.map(h=>snapRow(h.ticker,(h.weight*100).toFixed(2))).join("")}</table>
+     <div class="row" style="margin-top:8px"><span id="snac"></span><button class="btn sec sm" id="snadd">${T("add_row")}</button><button class="btn" id="snsave">${T("save")}</button><span id="snmsg"></span></div></details></div>`;
+  $("#fsave").onclick=async()=>{const r=await post("/api/investor/follow",{id,date:$("#fdate").value});if(r.error){$("#fmsg").innerHTML=`<span class="bad">${esc(r.error)}</span>`;return}INV_LIST=null;render()};
+  bindPfFrom();
+  $("#snac").innerHTML=searchBox("sns",t=>{$("#snt").insertAdjacentHTML("beforeend",snapRow(t,""));bindSnap()});bindSearch("sns");
+  $("#snadd").onclick=()=>{$("#snt").insertAdjacentHTML("beforeend",snapRow("",""));bindSnap()};bindSnap();
+  $("#snsave").onclick=async()=>{const rows=[...document.querySelectorAll("#snt tr")].map(tr=>({ticker:tr.querySelector(".snt").value.trim(),weight:parseFloat(tr.querySelector(".snw").value)})).filter(x=>x.ticker&&x.weight>0)
+    .map(x=>({ticker:x.ticker,weight:x.weight/100}));
+    $("#snmsg").innerHTML=`<span class="muted">${T("loading")}</span>`;
+    const r=await post("/api/investor/holdings",{id,as_of:$("#snd").value,holdings:rows});
+    if(r.error){$("#snmsg").innerHTML=`<span class="bad">${esc(r.error)}</span>`;return}render()};
+  document.querySelectorAll("[data-delsnap]").forEach(b=>b.onclick=async()=>{if(!confirm(T("delete")+" "+b.dataset.delsnap+"?"))return;
+    const r=await post("/api/investor/holdings/delete",{id,as_of:b.dataset.delsnap});if(r.error)alert(r.error);render()});
+}
+const snapRow=(t,w)=>`<tr><td><input class="snt ltr" value="${esc(t)}" style="width:130px"></td><td><input class="snw" type="number" step="0.01" value="${esc(w)}"> %</td><td><button class="btn sec sm snx">✕</button></td></tr>`;
+function bindSnap(){document.querySelectorAll(".snx").forEach(b=>b.onclick=()=>b.closest("tr").remove())}
+VIEWS["inv.stocks"]=investorView;VIEWS["inv.etf"]=investorView;
+
+/* --- search box (autocomplete) --- */
+function searchBox(id,onpick){SEARCH_CB[id]=onpick;return `<span class="ac"><input id="${id}" placeholder="${esc(T("search_sec"))}" style="width:320px" autocomplete="off"><div class="list" id="${id}-l" style="display:none"></div></span>`}
+const SEARCH_CB={};
+function bindSearch(id){const inp=$("#"+id),lst=$("#"+id+"-l");let tm=null,seq=0;
+  inp.oninput=()=>{clearTimeout(tm);const qv=inp.value.trim();if(qv.length<1){lst.style.display="none";return}
+    tm=setTimeout(async()=>{const my=++seq;let r=[];try{r=await api("/api/search?q="+encodeURIComponent(qv))}catch(e){}
+      if(my!==seq)return;
+      lst.innerHTML=r.map(x=>`<div data-t="${esc(x.ticker)}"><b class="ltr">${esc(x.ticker)}</b> — ${esc(x.name)} <span class="muted">${esc(x.exchange)} · ${esc(x.type||"")}</span></div>`).join("")||`<div class="muted">—</div>`;
+      lst.style.display="block";lst.querySelectorAll("[data-t]").forEach(d=>d.onmousedown=e=>{e.preventDefault();inp.value=d.dataset.t;lst.style.display="none";SEARCH_CB[id](d.dataset.t)})},300)};
+  inp.onblur=()=>setTimeout(()=>lst.style.display="none",150);
+  inp.onkeydown=e=>{if(e.key==="Enter"&&inp.value.trim()){lst.style.display="none";SEARCH_CB[id](inp.value.trim().toUpperCase())}};
+}
+
+/* --- portfolios --- */
+VIEWS["pf.all"]=async v=>{
+  PF_LIST=await api("/api/portfolios");
+  v.innerHTML=`<div class="note">${T("pf_intro")}</div>`+(PF_LIST.length?`<div class="cards">${PF_LIST.map(p=>{const s=p.summary;return `<div class="card">
+    <h3><button class="link" data-p="${p.id}">${esc(p.name)}</button></h3>
+    ${s?`<div class="row" style="margin:0;justify-content:space-between"><div><div style="font-size:20px;font-weight:700">${cad(s.value)}</div><div class="muted" style="font-size:13px">${T("invested")} ${cad(s.invested)}</div></div>${spark(p.series)}</div>
+    <table style="margin-top:8px"><tr><td>${T("gain")}</td><td class="ltr ${cls(s.gain)}">${cad(s.gain)} (${pct(s.gain_pct)})</td></tr><tr><td>${T("twr")}</td><td class="ltr ${cls(s.twr)}">${pct(s.twr)}</td></tr>
+    <tr><td>${T("vs_bench_same")} <span class="ltr muted">${esc(p.benchmark)}</span></td><td class="ltr ${cls(s.vs_bench)}">${cad(s.vs_bench)}</td></tr></table>`:`<p class="muted">${T("no_data")}</p>`}</div>`}).join("")}</div>`:`<div class="card muted">${T("no_pf")}</div>`)+
+    `<div class="card"><h3>${T("s_new").replace("+ ","")}</h3>${newPfForm()}</div>`;
+  document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>go("pf","p"+b.dataset.p));bindNewPf();
+};
+function newPfForm(){return `<div class="formgrid"><label>${T("pf_name")}<input id="npn" style="width:220px"></label>
+  <label>${T("pf_bench")}<input id="npb" class="ltr" value="${esc(CFG.benchmark)}" style="width:110px"></label>
+  <label>${T("pf_fx")}<select id="npf"><option value="0.015">${T("fx_cad")}</option><option value="0">${T("fx_usd")}</option></select></label>
+  <button class="btn" id="npgo">${T("create")}</button><span id="npm"></span></div>`}
+function bindNewPf(){$("#npgo").onclick=async()=>{const r=await post("/api/portfolio/create",{name:$("#npn").value,benchmark:$("#npb").value,fx_fee:+$("#npf").value});
+  if(r.error){$("#npm").innerHTML=`<span class="bad">${esc(r.error)}</span>`;return}PF_LIST=null;go("pf","p"+r.id)}}
+VIEWS["pf.new"]=async v=>{v.innerHTML=`<div class="card"><h3>${T("s_new").replace("+ ","")}</h3>${newPfForm()}</div>`;bindNewPf()};
+let PFP=load("pfp",{preset:"max",from:2016,to:+new Date().getFullYear()});
+VIEWS["pf.one"]=async v=>{
+  const pid=+R.s.slice(1);const [s]=periodRange(PFP);
+  const d=await api("/api/portfolio?"+qs({id:pid,start:PFP.preset==="max"?"":s}));
+  const p=d.portfolio,S=d.summary,ser=d.series;
+  v.innerHTML=`${S?`<div class="grid">
+    <div class="card kpi"><div class="v">${cad(S.value)}</div><div class="l">${T("value")}</div></div>
+    <div class="card kpi"><div class="v">${cad(S.invested)}</div><div class="l">${T("invested")}</div></div>
+    <div class="card kpi"><div class="v ${cls(S.gain)}">${cad(S.gain)}</div><div class="l">${T("gain")} <span class="ltr">${pct(S.gain_pct)}</span></div></div>
+    <div class="card kpi"><div class="v ltr ${cls(S.twr)}">${pct(S.twr)}</div><div class="l">${T("twr")}</div></div>
+    <div class="card kpi"><div class="v ${cls(S.vs_bench)}">${cad(S.vs_bench)}</div><div class="l">${T("vs_bench_same")} <span class="ltr">${esc(p.benchmark)}: ${cad(S.bench_value)}</span></div></div>
+    <div class="card kpi"><div class="v ltr bad">${pct(S.risk.maxdd)}</div><div class="l">${T("th_maxdd")} · ${T("realized")} ${cad(S.realized)} · ${T("fees")} ${cad(S.fees)}</div></div></div>
+   <div class="card"><div class="row">${periodBar("pp",PFP,["1m","3m","ytd","1y","3y","max"],()=>{store("pfp",PFP);render()})}</div>
+    ${lineChart([{name:T("chart_value"),pts:ser.map(x=>[x[0],x[1]]),width:2.4},{name:T("chart_inv"),pts:ser.map(x=>[x[0],x[2]]),dash:true,color:"#999"},{name:p.benchmark,pts:ser.map(x=>[x[0],x[3]]),dash:true,color:"#c96442"}],{mode:"abs",h:300})}
+    ${d.period?`<p class="muted">${T("twr")} ${esc(d.period.start)} → ${esc(d.period.end)}: <b class="ltr ${cls(d.period.twr)}">${pct(d.period.twr)}</b></p>`:""}</div>`:""}
+   <div class="card"><h3>${T("add_tx")}</h3><div class="formgrid">
+     <label>${T("tx_type")}<select id="txt"><option value="buy">${T("t_buy")}</option><option value="sell">${T("t_sell")}</option><option value="deposit">${T("t_deposit")}</option><option value="withdraw">${T("t_withdraw")}</option></select></label>
+     <label id="txsec">${T("th_ticker")}${searchBox("txs",t=>quote(t))}</label>
+     <label>${T("th_date")}<input type="date" id="txd" value="${CFG.today}" max="${CFG.today}"></label>
+     <label id="txmode">&nbsp;<span class="seg"><button data-m="amt" class="on">${T("by_amt")}</button><button data-m="qty">${T("by_qty")}</button></span></label>
+     <label><span id="txvl">${T("amount_cad")}</span><input type="number" id="txv" step="any" min="0"></label>
+     <label id="txpl">${T("price_opt")}<input type="number" id="txp" step="any" min="0"></label>
+     <label>${T("fee_cad")}<input type="number" id="txf" step="any" min="0" value="0" style="width:80px"></label>
+     <label>${T("note")}<input id="txn" style="width:160px"></label>
+     <button class="btn" id="txgo">${T("add")}</button></div><p id="txq" class="muted" style="margin:8px 0 0"></p><p id="txm"></p></div>
+   ${S?`<div class="card"><h3>${T("positions")}</h3><div class="tablewrap"><table><tr><th>${T("th_ticker")}</th><th>${T("th_company")}</th><th>${T("th_qty")}</th><th>${T("th_price")}</th><th>${T("th_cost")}</th><th>${T("th_value")}</th><th>${T("th_gain")}</th><th>${T("th_weight")}</th></tr>
+    ${d.positions.map(x=>`<tr><td class="ltr"><b>${esc(x.ticker)}</b></td><td>${esc(x.name||(x.ticker==="CASH"?T("cash"):""))}</td><td class="ltr">${x.qty==null?"—":num(x.qty,4)}</td>
+     <td class="ltr">${x.price==null?"—":num(x.price)} <span class="muted">${esc(x.ticker==="CASH"?"":x.currency)}</span></td><td class="ltr">${cad(x.cost)}</td><td class="ltr">${cad(x.value)}</td>
+     <td class="ltr ${cls(x.gain)}">${x.ticker==="CASH"?"—":cad(x.gain)+" "+pct(x.ret)}</td><td class="ltr">${pctp(x.weight)}</td></tr>`).join("")}</table></div><p class="muted">${T("pf_note")}</p>
+     ${d.warnings.length?`<p class="warn ltr">${esc(d.warnings.join(" · "))}</p>`:""}</div>`:""}
+   <div class="card"><h3>${T("transactions")} (${d.transactions.length})</h3><div class="tablewrap"><table><tr><th>${T("th_date")}</th><th>${T("tx_type")}</th><th>${T("th_ticker")}</th><th>${T("th_qty")}</th><th>${T("th_price")}</th><th>${T("amount_cad")}</th><th>${T("fee_cad")}</th><th>${T("note")}</th><th></th></tr>
+    ${d.transactions.slice().reverse().map(x=>`<tr><td class="ltr">${esc(x.date)}</td><td>${T("t_"+x.type)}</td><td class="ltr">${esc(x.ticker||"")}</td><td class="ltr">${x.quantity==null?"":num(x.quantity,4)}</td>
+     <td class="ltr">${x.price==null?"":num(x.price)}</td><td class="ltr">${x.amount==null?"":num(x.amount)}</td><td class="ltr">${x.fee?num(x.fee):""}</td><td>${esc(x.note||"")}</td><td><button class="btn sec sm" data-dtx="${x.id}">✕</button></td></tr>`).join("")}</table></div></div>
+   <div class="card"><details><summary>${T("pf_settings")}</summary><div class="formgrid" style="margin-top:10px">
+     <label>${T("pf_name")}<input id="eps" value="${esc(p.name)}"></label><label>${T("pf_bench")}<input id="epb" class="ltr" value="${esc(p.benchmark)}" style="width:110px"></label>
+     <label>${T("pf_fx")}<select id="epf"><option value="0.015" ${p.fx_fee>0?"selected":""}>${T("fx_cad")}</option><option value="0" ${p.fx_fee==0?"selected":""}>${T("fx_usd")}</option></select></label>
+     <button class="btn" id="epgo">${T("save")}</button><button class="btn danger" id="epdel">${T("delete")}</button><span id="epm"></span></div></details></div>`;
+  bindSearch("txs");
+  let mode="amt";
+  const sync=()=>{const t=$("#txt").value,cash=t==="deposit"||t==="withdraw";
+    $("#txsec").style.display=$("#txmode").style.display=$("#txpl").style.display=cash?"none":"";
+    $("#txvl").textContent=cash||mode==="amt"?T("amount_cad"):T("th_qty")};
+  $("#txt").onchange=sync;
+  document.querySelectorAll("#txmode button").forEach(b=>b.onclick=e=>{e.preventDefault();mode=b.dataset.m;document.querySelectorAll("#txmode button").forEach(x=>x.classList.toggle("on",x===b));sync()});
+  async function quote(t){$("#txq").textContent=T("loading");try{const r=await api("/api/quote?"+qs({ticker:t,date:$("#txd").value}));
+    $("#txq").innerHTML=`<b class="ltr">${esc(r.ticker)}</b> ${esc(r.name||"")} · ${T("quote_of",num(r.price),esc(r.price_date),esc(r.currency))}${r.foreign&&p.fx_fee>0?` · FX ${pct(p.fx_fee)}`:""}`}catch(e){$("#txq").innerHTML=`<span class="bad">${esc(e.message)}</span>`}}
+  $("#txd").onchange=()=>{if($("#txs").value)quote($("#txs").value.toUpperCase())};
+  $("#txgo").onclick=async()=>{const t=$("#txt").value,cash=t==="deposit"||t==="withdraw",val=$("#txv").value;
+    const b={portfolio_id:pid,type:t,date:$("#txd").value,fee:+$("#txf").value||0,note:$("#txn").value};
+    if(cash)b.amount=+val;else{b.ticker=$("#txs").value.trim().toUpperCase();if(mode==="amt")b.amount=+val;else b.quantity=+val;if($("#txp").value)b.price=+$("#txp").value}
+    $("#txgo").disabled=true;$("#txm").innerHTML=`<span class="muted">${T("loading")}</span>`;
+    const r=await post("/api/portfolio/tx",b);$("#txgo").disabled=false;
+    if(r.error){$("#txm").innerHTML=`<span class="bad">${esc(r.error)}</span>`;return}PF_LIST=null;render()};
+  document.querySelectorAll("[data-dtx]").forEach(b=>b.onclick=async()=>{if(!confirm(T("confirm_del_tx")))return;await post("/api/portfolio/tx/delete",{id:+b.dataset.dtx});render()});
+  $("#epgo").onclick=async()=>{const r=await post("/api/portfolio/update",{id:pid,name:$("#eps").value,benchmark:$("#epb").value,fx_fee:+$("#epf").value});
+    if(r.error){$("#epm").innerHTML=`<span class="bad">${esc(r.error)}</span>`;return}PF_LIST=null;render()};
+  $("#epdel").onclick=async()=>{if(!confirm(T("confirm_del_pf",p.name)))return;await post("/api/portfolio/delete",{id:pid});PF_LIST=null;go("pf","all")};
+  sync();
+};
+
+/* --- system --- */
+VIEWS["sys.inbox"]=async v=>{
   const b=await api("/api/inbox");
-  const ma=manualAgents();
+  const ma=Object.keys(CFG.agents).filter(a=>CFG.agents[a].provider==="manual");
   const list=(arr,err)=>arr.length?`<table>${arr.map(f=>`<tr><td class="ltr">${esc(f.name)}</td><td class="ltr muted">${esc(f.modified)}</td>${err?`<td class="bad ltr">${esc(f.error||"")}</td>`:""}</tr>`).join("")}</table>`:`<p class="muted">${T("empty")}</p>`;
-  $("#inbox").innerHTML=`<div class="card"><h3>${T("paste_title")}</h3>
+  v.innerHTML=`<div class="card"><h3>${T("paste_title")}</h3>
    <p class="muted">${T("paste_help",ma.map(a=>label(a)).join(" / "))}</p>
    <div class="row"><select id="pa">${ma.map(a=>`<option value="${esc(a)}">${esc(label(a))}</option>`).join("")}</select>
+   <select id="ptr">${CFG.tracks.map(t=>`<option value="${t}">${T("track_"+t)}</option>`).join("")}</select>
    <button class="btn" id="psave">${T("save_import")}</button><span id="pmsg"></span></div>
    <textarea id="ptext" placeholder="${esc(T("paste_ph"))}"></textarea></div>
    <div class="card"><h3>${T("waiting")}</h3>${list(b.pending)}</div>
@@ -307,28 +757,21 @@ async inbox(){
    <div class="card"><h3>${T("processed")}</h3>${list(b.processed)}</div>
    <p class="muted ltr" style="text-align:left">${esc(CFG.inbox)}</p>`;
   $("#psave").onclick=async()=>{$("#psave").disabled=true;
-    const r=await post("/api/paste",{agent:$("#pa").value,text:$("#ptext").value});
-    $("#pmsg").innerHTML=r.error?`<span class="bad">${esc(r.error)}</span>`:`<span class="good">${esc((r.log||[]).join(" · "))}</span>`;
-    $("#psave").disabled=false;if(!r.error){$("#ptext").value="";setTimeout(()=>LOAD.inbox(),1500)}};
-},
-async prompts(){
+    const r=await post("/api/paste",{agent:$("#pa").value,track:$("#ptr").value,text:$("#ptext").value});
+    $("#pmsg").innerHTML=r.error?`<span class="bad">${esc(r.error)}</span>`:`<span class="good ltr" style="white-space:pre-line">${esc((r.log||[]).join("\n"))}</span>`;
+    $("#psave").disabled=false;if(!r.error){$("#ptext").value="";PICKS=null;setTimeout(()=>{if(R.s==="inbox")render()},4000)}};
+};
+VIEWS["sys.prompts"]=async v=>{
   const p=await api("/api/prompts");
-  $("#prompts").innerHTML=`<div class="card"><p>${T("prompts_help1")}</p><p class="muted">${T("prompts_help2")}</p></div>`+
-   Object.keys(p).map(a=>`<div class="card"><div class="row"><h3 style="margin:0">${ag(a)}</h3><button class="btn sec" data-c="${esc(a)}">${T("copy")}</button><span class="muted" id="c-${esc(a)}"></span></div><pre id="p-${esc(a)}">${esc(p[a])}</pre></div>`).join("");
-  document.querySelectorAll("[data-c]").forEach(b=>b.onclick=async()=>{const a=b.dataset.c;
-    try{await navigator.clipboard.writeText(p[a]);$("#c-"+a).textContent=T("copied")}catch(e){
-      const r=document.createRange();r.selectNodeContents($("#p-"+a));getSelection().removeAllRanges();getSelection().addRange(r);$("#c-"+a).textContent=T("selected")}});
-},
-async report(){
-  const r=await api("/api/report");
-  $("#report").innerHTML=`<div class="card md ltr" style="text-align:left">${md(r.markdown)}</div>`;
-},
-async log(){
-  const l=await api("/api/log");
-  $("#log").innerHTML=`<div class="card"><h3>${T("log_title")}</h3><pre id="logpre">${esc(l.text||T("no_log"))}</pre></div>`;
-  const p=$("#logpre");p.scrollTop=p.scrollHeight;
-}};
-function label(a){return NAMES[a]||a}
+  v.innerHTML=`<div class="card"><p>${T("prompts_help1")}</p><p class="muted">${T("prompts_help2")}</p></div>`+
+   Object.keys(p).map(t=>`<h3>${T("prompts_"+t)}</h3>`+Object.keys(p[t]).map(a=>{const k=t+"-"+a;return `<div class="card"><div class="row"><h3 style="margin:0">${ag(a)}</h3><span class="chip">${T("track_"+t)}</span><button class="btn sec" data-c="${esc(k)}">${T("copy")}</button><span class="muted" id="c-${esc(k)}"></span></div><details><summary>…</summary><pre id="p-${esc(k)}">${esc(p[t][a])}</pre></details></div>`}).join("")).join("");
+  document.querySelectorAll("[data-c]").forEach(b=>b.onclick=async()=>{const k=b.dataset.c,[t,a]=k.split("-");
+    try{await navigator.clipboard.writeText(p[t][a]);$("#c-"+k).textContent=T("copied")}catch(e){
+      const pre=$("#p-"+k);pre.closest("details").open=true;const r=document.createRange();r.selectNodeContents(pre);getSelection().removeAllRanges();getSelection().addRange(r);$("#c-"+k).textContent=T("selected")}});
+};
+VIEWS["sys.report"]=async v=>{const r=await api("/api/report");v.innerHTML=`<div class="card md ltr" style="text-align:left">${md(r.markdown)}</div>`};
+VIEWS["sys.log"]=async v=>{const l=await api("/api/log");
+  v.innerHTML=`<div class="card"><h3>${T("log_title")}</h3><pre id="logpre">${esc(l.text||T("no_log"))}</pre></div>`;const p=$("#logpre");p.scrollTop=p.scrollHeight};
 
 function md(src){
   const inl=s=>esc(s).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/`(.+?)`/g,"<code>$1</code>");
@@ -345,6 +788,19 @@ function md(src){
   return out.join("");
 }
 
+/* ---------- header: run / language / updates ---------- */
+function applyLang(){
+  document.documentElement.lang=LANG;
+  document.documentElement.dir=LANG==="ar"?"rtl":"ltr";
+  $("#title").textContent=T("title");
+  $("#runbtn").textContent=T("run");
+  $("#refresh").textContent=T("refresh");
+  $("#langbtn").textContent=T("switch_to");
+  $("#updbtn").textContent=T("check_updates");
+  $("#ver").textContent=CFG&&CFG.version?T("version",CFG.version):"";
+  if(lastRun)runstate(lastRun);
+}
+$("#langbtn").onclick=()=>{LANG=LANG==="ar"?"en":"ar";try{localStorage.setItem("lang",LANG)}catch(e){}applyLang();if(CFG)render()};
 function runstate(r){
   lastRun=r;
   $("#runbtn").disabled=r.running;
@@ -352,7 +808,7 @@ function runstate(r){
     r.finished?`${T("last_run",esc(r.finished.replace("T"," ")))} ${r.code===0?`<span class="good">✓</span>`:`<span class="bad">${T("see_log")}</span>`}`:"";
 }
 $("#runbtn").onclick=async()=>{await post("/api/run");runstate({running:true,started:new Date().toTimeString().slice(0,8)});poll()};
-$("#refresh").onclick=()=>LOAD[current]();
+$("#refresh").onclick=()=>{INV_LIST=PF_LIST=PICKS=null;render()};
 $("#updbtn").onclick=checkUpdate;
 async function checkUpdate(){
   const u=$("#updstate");u.innerHTML=`<span class="muted">${T("checking")}</span>`;
@@ -378,11 +834,14 @@ async function installUpdate(r){
   setTimeout(tick,2000);
 }
 async function poll(){const o=await api("/api/overview");runstate(o.run);
-  if(o.run.running)setTimeout(poll,3000);else LOAD[current]();}
-setInterval(()=>{if(["overview","log","inbox"].includes(current))LOAD[current]()},30000);
+  if(o.run.running)setTimeout(poll,3000);else{INV_LIST=PF_LIST=PICKS=null;render()}}
+setInterval(()=>{const k=R.m+"."+R.s;if(["lab.overview","sys.log","sys.inbox"].includes(k))render()},30000);
+window.addEventListener("hashchange",()=>{parseHash();render()});
 
 applyLang();
-api("/api/config").then(c=>{CFG=c;applyLang();show(current in LOAD?current:"overview")});
+parseHash();
+api("/api/config").then(async c=>{CFG=c;applyLang();if(!MENUS[R.m])R={m:"lab",s:"overview",i:null};
+  const o=await api("/api/overview");runstate(o.run);go(R.m,R.s,R.i)});
 </script>
 </body>
 </html>

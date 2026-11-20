@@ -4,7 +4,8 @@ import tomllib
 from datetime import date, timedelta
 from pathlib import Path
 
-from . import prices, prompts, scoring, session
+from . import investors, portfolios, prices, prompts, scoring, session
+from .tracks import track_cfg, tracks
 from .db import ROOT, connect
 
 
@@ -39,9 +40,11 @@ def main(argv=None):
     sub.add_parser("ingest", help="import pasted Gemini/ChatGPT/Claude replies from inbox/")
     pp = sub.add_parser("print-prompt", help="print the prompt for an app agent (gemini, chatgpt, claude)")
     pp.add_argument("agent")
+    pp.add_argument("--track", choices=["etf", "stocks"], default="etf")
     pp.add_argument("--out")
-    f = sub.add_parser("fetch-prices", help="download adjusted prices from Yahoo")
-    f.add_argument("--start", default="2025-01-01")
+    f = sub.add_parser("fetch-prices", help="download prices from Yahoo (lab, AI picks, investors, portfolios)")
+    f.add_argument("--start", default=None, help="lab start date (default: as the daily run)")
+    f.add_argument("--full", action="store_true", help="re-download the full history")
     sub.add_parser("import-prices", help="import CSV: ticker,date,close").add_argument("path")
     sub.add_parser("resolve", help="resolve due forecasts")
     rep = sub.add_parser("report", help="write the Markdown report")
@@ -56,20 +59,46 @@ def main(argv=None):
     today = a.today or date.today().isoformat()
     inbox = ROOT / lab.get("inbox", "inbox")
 
-    def fetch(start):
-        tickers = sorted(set(scoring.tickers_needed(conn, lab["universe"])) | {lab["benchmark"]})
-        for t in tickers:
+    stocks = track_cfg(cfg, "stocks") if "stocks" in tracks(cfg) else None
+    HISTORY = "2016-01-01"  # investors & portfolios: enough history for the 10-year views
+
+    def fetch(start, full=False):
+        """Lab/AI-picks tickers from `start`; investors, portfolios and FX from HISTORY.
+        Incremental: only recent days unless a new distribution/split changed the history."""
+        jobs = {}
+        lab_t = set(scoring.tickers_needed(conn, lab["universe"])) | {lab["benchmark"]}
+        if stocks:
+            lab_t |= {stocks["benchmark"], *stocks.get("compare", [])}
+            lab_t |= {c[k] for c in stocks.get("core_forecasts", []) for k in ("ticker_a", "ticker_b") if c.get(k)}
+        for t in lab_t:  # full history too: the lab funds are the benchmarks of the other views
+            jobs[t] = min(start, HISTORY)
+        for t in set(investors.tickers(conn)) | set(portfolios.tickers(conn)) | {"SPY", "AOR"}:
+            jobs[t] = HISTORY
+        jobs.pop("CASH", None)
+        failed = 0
+        for t in sorted(jobs):
             try:
-                print(f"  {t}: {prices.fetch_yahoo(conn, t, start, today)} rows")
+                n = prices.fetch_yahoo(conn, t, jobs[t], today, incremental=not full)
+                print(f"  {t}: {n} rows")
+            except Exception as e:
+                failed += 1
+                print(f"  {t}: FAILED {e}", file=sys.stderr)
+        for t in prices.fx_needed(conn, jobs):  # exchange rates for non-CAD prices (after metadata)
+            try:
+                print(f"  {t}: {prices.fetch_yahoo(conn, t, HISTORY, today, incremental=not full)} rows")
             except Exception as e:
                 print(f"  {t}: FAILED {e}", file=sys.stderr)
+        print(f"  {len(jobs)} tickers, {failed} failed")
 
     def write_report(out):
-        Path(out).write_text(scoring.report(conn, lab, today), encoding="utf-8")
+        txt = scoring.report(conn, lab, today)
+        if stocks and conn.execute("SELECT 1 FROM sessions WHERE track='stocks'").fetchone():
+            txt += "\n\n" + scoring.report(conn, stocks, today)
+        Path(out).write_text(txt, encoding="utf-8")
         print(f"report written: {out}")
 
     if a.cmd in ("monthly", "dashboard"):
-        prompts.write_prompt_files(lab, ROOT, inbox, prompts.manual_agents(cfg))
+        prompts.write_prompt_files(lab, ROOT, inbox, prompts.manual_agents(cfg), stocks)
     if a.cmd == "dashboard":
         from . import dashboard
         dashboard.serve(cfg, a.port, not a.no_browser, a.config)
@@ -106,14 +135,16 @@ def main(argv=None):
     elif a.cmd == "print-prompt":
         if a.agent not in cfg["agents"]:
             sys.exit(f"unknown agent '{a.agent}' (configured: {', '.join(cfg['agents'])})")
-        txt = prompts.app_prompt(lab, a.agent, str(inbox))
+        txt = prompts.app_prompt(track_cfg(cfg, a.track), a.agent, str(inbox))
         if a.out:
             Path(a.out).write_text(txt, encoding="utf-8")
             print(f"written {a.out}")
         else:
             print(txt)
     elif a.cmd == "fetch-prices":
-        fetch(a.start)
+        first = conn.execute("SELECT MIN(start_date) FROM forecasts").fetchone()[0] or today
+        year_ago = (date.fromisoformat(today) - timedelta(days=400)).isoformat()
+        fetch(a.start or min(first, year_ago), a.full)
     elif a.cmd == "import-prices":
         print(f"imported {prices.import_csv(conn, a.path)} rows")
     elif a.cmd == "resolve":

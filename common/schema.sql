@@ -54,3 +54,73 @@ CREATE TABLE IF NOT EXISTS prices (
     source        TEXT,
     PRIMARY KEY (ticker, date)
 );
+
+-- ===== 1.4.0 =====
+-- بيانات الأوراق المالية (من Yahoo): العملة والاسم والنوع
+CREATE TABLE IF NOT EXISTS securities (
+    ticker        TEXT PRIMARY KEY,
+    name          TEXT,
+    currency      TEXT,                    -- كما يرسلها Yahoo (GBp = بنس)
+    exchange      TEXT,
+    type          TEXT,                    -- EQUITY / ETF / MUTUALFUND / CRYPTOCURRENCY / CURRENCY
+    updated       TEXT
+);
+
+-- المستثمرون الذين ينشرون محافظهم (من Investor-Watchlist)
+CREATE TABLE IF NOT EXISTS investors (
+    id            TEXT PRIMARY KEY,
+    list          TEXT NOT NULL,           -- stocks / etf
+    rank          INTEGER,
+    name          TEXT NOT NULL,
+    kind          TEXT,
+    style         TEXT,
+    since         TEXT,
+    url           TEXT,
+    five_y        REAL,
+    record        TEXT,
+    reported      TEXT,                    -- JSON {year: return} كما نشرها المصدر
+    caveat        TEXT,
+    verdict       TEXT,
+    score         INTEGER,
+    proxy         TEXT,                    -- ورقة مدرجة تمثل السجل الفعلي (BRK-B, PRPFX...)
+    benchmarks    TEXT,                    -- JSON list
+    follow_date   TEXT,                    -- تاريخ بدء المتابعة (يعدّله المستخدم)
+    active        INTEGER NOT NULL DEFAULT 1,
+    notes         TEXT
+);
+
+-- لقطات المحفظة المعلنة: كل لقطة تبدأ من تاريخها حتى اللقطة التالية
+CREATE TABLE IF NOT EXISTS investor_holdings (
+    investor_id   TEXT NOT NULL REFERENCES investors(id),
+    as_of         TEXT NOT NULL,
+    ticker        TEXT NOT NULL,
+    weight        REAL NOT NULL,
+    estimated     INTEGER NOT NULL DEFAULT 0,
+    source        TEXT,
+    PRIMARY KEY (investor_id, as_of, ticker)
+);
+
+-- محافظ المستخدم الخاصة
+CREATE TABLE IF NOT EXISTS portfolios (
+    id            INTEGER PRIMARY KEY,
+    name          TEXT NOT NULL,
+    created_at    TEXT NOT NULL,
+    benchmark     TEXT NOT NULL DEFAULT 'XEQT.TO',
+    fx_fee        REAL NOT NULL DEFAULT 0.015,
+    notes         TEXT,
+    archived      INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS transactions (
+    id            INTEGER PRIMARY KEY,
+    portfolio_id  INTEGER NOT NULL REFERENCES portfolios(id) ON DELETE CASCADE,
+    date          TEXT NOT NULL,
+    type          TEXT NOT NULL CHECK (type IN ('buy','sell','deposit','withdraw')),
+    ticker        TEXT,
+    quantity      REAL,
+    price         REAL,                    -- بعملة الورقة
+    fee           REAL NOT NULL DEFAULT 0, -- CAD
+    amount        REAL,                    -- CAD (للإيداع والسحب)
+    note          TEXT,
+    created_at    TEXT
+);

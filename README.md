@@ -5,6 +5,17 @@ the same investment question for a Wealthsimple TFSA. Their probability forecast
 Brier score, and their allocations are compared with a simple benchmark (XEQT.TO). No real money is
 moved by this app.
 
+Since 1.4.0 the dashboard has five menus:
+- **Fund lab (AI):** the original experiment (100 CAD a month across a fixed ETF list).
+- **Stock picks (AI):** the same agents, prompt format and scoring, but picking individual companies with a
+  weight for each. Results are tracked in CAD after Wealthsimple's 1.5% FX fee.
+- **Investors:** the 30 investors from the Investor Watchlist, each with its own tab, plus a comparison of all of
+  them. It includes a copy simulator in CAD, a period filter (1Y to 10Y or a custom range of years) and the
+  return since you started following each one.
+- **My portfolios:** as many custom portfolios as you want, with company/ETF search, buys, sells, deposits and
+  withdrawals. Each is compared with a benchmark that receives the same deposits.
+- **System:** inbox, prompts, report, log.
+
 Runs locally on **Windows** and **Linux** (Python 3.11+, standard library only). The dashboard is
 at http://127.0.0.1:8765, in Arabic or English.
 
@@ -59,7 +70,7 @@ releases/          built files, committed so they can be downloaded directly
 1. Change files in `common/`, `windows/` or `linux/`.
 2. If `config.toml` must change for existing installs, add a migration to `MIGRATIONS` in
    `updater/updater.py`. Never edit or remove old migrations: they are what upgrades old installs.
-3. Raise the number in `VERSION`, for example `1.2.0` → `1.3.0`.
+3. Raise the number in `VERSION`, for example `1.3.0` → `1.4.0`.
 4. Run `python build.py`, then commit and push to `main`.
 
 Installed dashboards see the new version the next time someone clicks **Check for updates**.

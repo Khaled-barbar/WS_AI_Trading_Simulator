@@ -60,11 +60,43 @@ def _row(name, v):
             f"{'%.0f%%' % (v['hits'] / n * 100) if n else '—'} |")
 
 
+def picks_performance(conn, lab, today=None, amount=100.0):
+    """مسار الشركات: كل توزيع كمبلغ واحد بالدولار الكندي من تاريخ بدء توقعاته، بعد رسوم
+    تحويل العملة على الأسهم غير الكندية، مقارنة بالمؤشر المرجعي وقائمة compare."""
+    from .investors import simulate, metrics
+    from .prices import Book
+    today = today or datetime.now(timezone.utc).date().isoformat()
+    book = Book(conn)
+    fee = lab.get("fx_fee", 0.015)
+    out = []
+    for r in conn.execute(
+            "SELECT r.id, r.agent, s.created_at AS month, "
+            "COALESCE((SELECT MIN(start_date) FROM forecasts WHERE response_id=r.id), s.created_at) AS d "
+            "FROM responses r JOIN sessions s ON s.id=r.session_id WHERE s.track=? "
+            "ORDER BY s.created_at, r.agent", (lab.get("track", "etf"),)):
+        al = {a["ticker"]: a["weight"] for a in conn.execute(
+            "SELECT ticker, weight FROM allocations WHERE response_id=?", (r["id"],))}
+        row = {"response_id": r["id"], "agent": r["agent"], "month": r["month"][:7], "start": r["d"],
+               "allocation": al, "ret": None, "series": [], "bench": {}}
+        if al and r["d"] < today:
+            sim = simulate(book, [(r["d"], al)], r["d"], today, amount, fee)
+            row["series"] = sim["series"]
+            row["ret"] = metrics(sim["series"])["total"]
+            row["warnings"] = sim["warnings"]
+            for b in [lab["benchmark"]] + list(lab.get("compare", [])):
+                bs = simulate(book, [(r["d"], {b: 1})], r["d"], today, amount, fee)
+                row["bench"][b] = metrics(bs["series"])["total"]
+        out.append(row)
+    return out
+
+
 def report(conn, lab, today=None):
     today = today or datetime.now(timezone.utc).date().isoformat()
+    track = lab.get("track", "etf")
     benchmark, core = lab["benchmark"], lab.get("core_forecasts", [])
     rows = conn.execute(
-        "SELECT r.agent, f.* FROM forecasts f JOIN responses r ON r.id=f.response_id").fetchall()
+        "SELECT r.agent, f.* FROM forecasts f JOIN responses r ON r.id=f.response_id "
+        "JOIN sessions s ON s.id=r.session_id WHERE s.track=?", (track,)).fetchall()
     g_all = defaultdict(lambda: {"b": [], "pending": 0, "hits": 0})
     g_core = defaultdict(lambda: {"b": [], "pending": 0, "hits": 0})
     for x in rows:
@@ -78,7 +110,9 @@ def report(conn, lab, today=None):
 
     head = ["| agent | resolved | pending | mean Brier | skill vs 50% | hit rate |",
             "|---|---|---|---|---|---|"]
-    lines = ["# Agents Lab report — " + today, "",
+    title = ("# Agents Lab report — " + today if track == "etf"
+             else "# AI stock picks (companies) — " + today)
+    lines = [title, "",
              "Brier: lower is better. Saying 50% every time scores 0.250.", "",
              "## 1. Core questions (identical for every agent — the fair comparison)", ""]
     lines += head + [_row(a, v) for a, v in sorted(g_core.items())]
@@ -88,12 +122,25 @@ def report(conn, lab, today=None):
     lines += ["", f"> Fewest resolved core forecasts for any agent: {n_min}. "
               "Do not draw conclusions before ~30, and treat Brier differences under ~0.02 as noise.", ""]
 
+    if track == "stocks":
+        cmp = [benchmark] + list(lab.get("compare", []))
+        lines += [f"## 3. Paper picks in CAD after {lab.get('fx_fee', 0.015):.1%} FX on non-CAD stocks, "
+                  "lump sum from response date", "",
+                  "| month | agent | from | return | " + " | ".join(cmp) + " |",
+                  "|---|---|---|---|" + "---|" * len(cmp)]
+        for x in picks_performance(conn, lab, today):
+            f = lambda v: "n/a" if v is None else f"{v:+.2%}"
+            lines.append(f"| {x['month']} | {x['agent']} | {x['start']} | {f(x['ret'])} | "
+                         + " | ".join(f(x["bench"].get(b)) for b in cmp) + " |")
+        lines += ["", "> Short-horizon returns are mostly noise. Weight section 1 over section 3."]
+        return "\n".join(lines)
     lines += [f"## 3. Paper allocations vs benchmark ({benchmark}), lump sum from response date", "",
               "| month | agent | from | return | benchmark | excess |", "|---|---|---|---|---|---|"]
     resp = conn.execute(
         "SELECT r.id, r.agent, s.created_at AS month, "
         "COALESCE((SELECT MIN(start_date) FROM forecasts WHERE response_id=r.id), s.created_at) AS d "
-        "FROM responses r JOIN sessions s ON s.id=r.session_id ORDER BY s.created_at, r.agent").fetchall()
+        "FROM responses r JOIN sessions s ON s.id=r.session_id WHERE s.track='etf' "
+        "ORDER BY s.created_at, r.agent").fetchall()
     for r in resp:
         al = conn.execute("SELECT ticker, weight FROM allocations WHERE response_id=?",
                           (r["id"],)).fetchall()

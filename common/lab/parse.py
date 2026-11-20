@@ -27,12 +27,19 @@ def extract_json(text: str) -> dict:
     raise ValueError("unbalanced JSON")
 
 
-def validate(obj: dict, universe: list[str], horizons: list[int], start: str):
-    """يُرجع (allocation, forecasts, warnings) بعد التنظيف."""
+def validate(obj: dict, universe, horizons: list[int], start: str):
+    """يُرجع (allocation, forecasts, warnings) بعد التنظيف.
+    universe=None (مسار الشركات): أي رمز بصيغة Yahoo؛ التحقق من وجوده يتم عند الحفظ."""
+    from .prices import TICKER_RE
+    if universe is None:
+        ok = lambda t: t == "CASH" or bool(TICKER_RE.match(str(t)))
+    else:
+        ok = lambda t: t in universe
     warns = []
     alloc = {}
     for t, w in (obj.get("allocation") or {}).items():
-        if t not in universe:
+        t = str(t).strip().upper() if universe is None else t
+        if not ok(t):
             warns.append(f"allocation ticker {t} not in universe — dropped")
             continue
         if float(w) > 0:
@@ -53,14 +60,18 @@ def validate(obj: dict, universe: list[str], horizons: list[int], start: str):
         try:
             kind = f["kind"]
             a = f["ticker_a"]
+            if universe is None:
+                a = str(a).strip().upper()
             h = int(f["horizon_days"])
             p = min(max(float(f["probability"]), 0.01), 0.99)
             if kind not in ("outperform", "return_above"):
                 raise ValueError(f"bad kind {kind}")
-            if a not in universe or a == "CASH":
+            if not ok(a) or a == "CASH":
                 raise ValueError(f"bad ticker_a {a}")
             b = f.get("ticker_b") if kind == "outperform" else None
-            if kind == "outperform" and (b not in universe or b == a):
+            if b and universe is None:
+                b = str(b).strip().upper()
+            if kind == "outperform" and (not b or not ok(b) or b == a):
                 raise ValueError(f"bad ticker_b {b}")
             thr = float(f.get("threshold", 0.0)) if kind == "return_above" else None
             if h not in horizons:

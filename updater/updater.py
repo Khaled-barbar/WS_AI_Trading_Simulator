@@ -228,7 +228,17 @@ def mig_1_1_0(text: str) -> str:
     return re.sub(r"(?m)^#[^\n]*Gemini[^\n]*Credential Manager[^\n]*\n", "", out)
 
 
-MIGRATIONS = [("1.1.0", mig_1_1_0)]
+def mig_1_4_0(text: str) -> str:
+    """AI stock picks: add the [stocks] section (defaults also live in lab/tracks.py)."""
+    if re.search(r"(?m)^\[stocks\]", text):
+        return text
+    return text.rstrip() + "\n" + STOCKS_BLOCK
+
+
+STOCKS_BLOCK = '\n# ===== 1.4.0: AI stock picks (companies) — same agents, same logic as [lab] =====\n# Prompts: dashboard → System → Prompts ("Company stocks"). Replies: inbox/<agent>-stocks-YYYY-MM.txt\n[stocks]\nenabled    = true\nbenchmark  = "XEQT.TO"\ncompare    = ["SPY", "XIU.TO"]\nmin_picks  = 5\nmax_picks  = 15\nmax_weight = 0.25\nfx_fee     = 0.015                     # Wealthsimple FX fee on non-CAD stocks (CAD account)\n'
+
+
+MIGRATIONS = [("1.1.0", mig_1_1_0), ("1.4.0", mig_1_4_0)]
 
 
 def migrate_config(root: Path, old: str, new: str):

@@ -9,14 +9,21 @@ import webbrowser
 from datetime import date, datetime, timedelta
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
-from . import prompts, scoring, updates
+from . import investors, portfolios, prices, prompts, scoring, updates
 from .db import ROOT, connect
+from .parse import extract_json
+from .tracks import track_cfg, tracks
 
 STATIC = Path(__file__).resolve().parent / "static"
+HISTORY = "2016-01-01"
 _run_lock = threading.Lock()
+_fetch_lock = threading.Lock()
 _run_state = {"running": False, "started": None, "finished": None, "code": None}
+
+FORECASTS_OF = ("FROM forecasts f JOIN responses r ON r.id=f.response_id "
+                "JOIN sessions s ON s.id=r.session_id WHERE s.track=?")
 
 
 def _rows(cur):
@@ -29,23 +36,48 @@ class API:
         self.port = port
         self.config_path = config_path
         self.lab = cfg["lab"]
+        self.stocks = track_cfg(cfg, "stocks")
         self.inbox = ROOT / self.lab.get("inbox", "inbox")
 
     def conn(self):
         return connect(self.lab["db_path"])
 
+    def tcfg(self, track):
+        return track_cfg(self.cfg, track or "etf")
+
+    # ---------- price helper: download a ticker (and its exchange rate) on demand ----------
+    def ensure(self, t, conn=None):
+        c = conn or self.conn()
+        t = t.strip().upper()
+        today = date.today().isoformat()
+        with _fetch_lock:
+            last = c.execute("SELECT MAX(date) FROM prices WHERE ticker=?", (t,)).fetchone()[0]
+            if not last or last < (date.today() - timedelta(days=4)).isoformat():
+                prices.fetch_yahoo(c, t, HISTORY, today, incremental=True)
+            for fx in prices.fx_needed(c, [t]):
+                lf = c.execute("SELECT MAX(date) FROM prices WHERE ticker=?", (fx,)).fetchone()[0]
+                if not lf or lf < (date.today() - timedelta(days=4)).isoformat():
+                    prices.fetch_yahoo(c, fx, HISTORY, today, incremental=True)
+        return t
+
     # ---------- GET ----------
-    def config(self):
+    def config(self, q=None):
+        s = self.stocks
         return {"agents": {k: {"provider": v["provider"], "model": v["model"]}
                            for k, v in self.cfg["agents"].items()},
                 **{k: self.lab[k] for k in ("benchmark", "universe", "horizons_days",
                                             "min_forecasts_per_agent", "question")},
                 "core_forecasts": self.lab.get("core_forecasts", []),
+                "tracks": tracks(self.cfg),
+                "stocks": {k: s[k] for k in ("benchmark", "compare", "min_picks", "max_picks", "max_weight",
+                                             "fx_fee", "horizons_days", "min_forecasts_per_agent",
+                                             "question", "core_forecasts")},
                 "root": str(ROOT), "inbox": str(self.inbox), "platform": sys.platform,
+                "today": date.today().isoformat(),
                 "version": (ROOT / "VERSION").read_text(encoding="utf-8").strip()
                 if (ROOT / "VERSION").is_file() else "dev"}
 
-    def overview(self):
+    def overview(self, q=None):
         c = self.conn()
         today = date.today().isoformat()
         month = today[:7]
@@ -56,28 +88,29 @@ class API:
             "SELECT COUNT(*) n, SUM(outcome IS NOT NULL) resolved, "
             "SUM(outcome IS NULL AND resolve_date<?) overdue, "
             "MIN(CASE WHEN outcome IS NULL AND resolve_date>? THEN resolve_date END) next_due "
-            "FROM forecasts", (stuck, today)).fetchone()
-        this_month = {r["agent"]: r["created_at"] for r in c.execute(
-            "SELECT r.agent, r.created_at FROM responses r JOIN sessions s ON s.id=r.session_id "
-            "WHERE substr(s.created_at,1,7)=?", (month,))}
-        last_price = c.execute("SELECT MAX(date) FROM prices").fetchone()[0]
+            + FORECASTS_OF, (stuck, today, "etf")).fetchone()
+        this_month = {}
+        for r in c.execute("SELECT r.agent, r.created_at, s.track FROM responses r JOIN sessions s "
+                           "ON s.id=r.session_id WHERE substr(s.created_at,1,7)=?", (month,)):
+            this_month.setdefault(r["track"], {})[r["agent"]] = r["created_at"]
+        last_price = c.execute("SELECT MAX(date) FROM prices WHERE ticker NOT LIKE '%=X'").fetchone()[0]
         return {"today": today, "month": month,
-                "sessions": c.execute("SELECT COUNT(*) FROM sessions").fetchone()[0],
-                "responses": c.execute("SELECT COUNT(*) FROM responses WHERE agent!='consensus'"
-                                       ).fetchone()[0],
-                "forecasts": dict(stats), "this_month": this_month,
+                "sessions": c.execute("SELECT COUNT(*) FROM sessions WHERE track='etf'").fetchone()[0],
+                "responses": c.execute("SELECT COUNT(*) FROM responses r JOIN sessions s ON s.id=r.session_id "
+                                       "WHERE r.agent!='consensus' AND s.track='etf'").fetchone()[0],
+                "forecasts": dict(stats), "this_month": this_month, "tracks": tracks(self.cfg),
                 "agents": list(self.cfg["agents"]), "last_price": last_price,
                 "inbox_pending": len(self._files(self.inbox)),
                 "inbox_failed": len([f for f in self._files(self.inbox / "failed")
                                      if not f["name"].endswith(".error")]),
-                "run": _run_state, "scoreboard": self.scoreboard(c)}
+                "run": _run_state,
+                "scoreboard": {t: self.scoreboard(c, t) for t in tracks(self.cfg)}}
 
-    def scoreboard(self, c=None):
+    def scoreboard(self, c=None, track="etf"):
         c = c or self.conn()
-        core = self.lab.get("core_forecasts", [])
+        core = self.tcfg(track).get("core_forecasts", [])
         out = {}
-        for x in c.execute("SELECT r.agent, f.* FROM forecasts f JOIN responses r "
-                           "ON r.id=f.response_id"):
+        for x in c.execute("SELECT r.agent, f.* " + FORECASTS_OF, (track,)):
             v = out.setdefault(x["agent"], {"core_b": [], "all_b": [], "pending": 0})
             if x["outcome"] is None:
                 v["pending"] += 1
@@ -93,16 +126,17 @@ class API:
                       "pending": v["pending"]}
         return res
 
-    def sessions(self):
+    def sessions(self, q=None):
+        track = (q or {}).get("track", "etf")
         c = self.conn()
         out = []
-        for s in _rows(c.execute("SELECT * FROM sessions ORDER BY created_at DESC")):
+        for s in _rows(c.execute("SELECT * FROM sessions WHERE track=? ORDER BY created_at DESC", (track,))):
             resp = _rows(c.execute("SELECT * FROM responses WHERE session_id=? ORDER BY agent",
                                    (s["id"],)))
             for r in resp:
                 r["allocation"] = _rows(c.execute(
-                    "SELECT ticker, weight FROM allocations WHERE response_id=? "
-                    "ORDER BY weight DESC", (r["id"],)))
+                    "SELECT a.ticker, a.weight, s.name FROM allocations a LEFT JOIN securities s "
+                    "ON s.ticker=a.ticker WHERE response_id=? ORDER BY weight DESC", (r["id"],)))
                 r["forecasts"] = _rows(c.execute(
                     "SELECT * FROM forecasts WHERE response_id=? ORDER BY resolve_date",
                     (r["id"],)))
@@ -111,35 +145,67 @@ class API:
             out.append(s)
         return out
 
-    def forecasts(self):
+    def forecasts(self, q=None):
+        track = (q or {}).get("track", "etf")
         c = self.conn()
-        core = self.lab.get("core_forecasts", [])
+        core = self.tcfg(track).get("core_forecasts", [])
         rows = _rows(c.execute(
-            "SELECT f.*, r.agent, substr(s.created_at,1,7) AS month FROM forecasts f "
-            "JOIN responses r ON r.id=f.response_id JOIN sessions s ON s.id=r.session_id "
-            "ORDER BY f.resolve_date, r.agent"))
-        from .prices import total_return
+            "SELECT f.*, r.agent, substr(s.created_at,1,7) AS month " + FORECASTS_OF +
+            " ORDER BY f.resolve_date, r.agent", (track,)))
         for f in rows:
             f["core"] = scoring._is_core(f, core)
             end = min(f["resolve_date"], date.today().isoformat())
-            f["ret_a"] = total_return(c, f["ticker_a"], f["start_date"], end)
-            f["ret_b"] = (total_return(c, f["ticker_b"], f["start_date"], end)
+            f["ret_a"] = prices.total_return(c, f["ticker_a"], f["start_date"], end)
+            f["ret_b"] = (prices.total_return(c, f["ticker_b"], f["start_date"], end)
                           if f["ticker_b"] else None)
         return rows
 
-    def prices(self):
+    def prices(self, q=None):
         c = self.conn()
         since = (date.today() - timedelta(days=400)).isoformat()
         out = {}
         for t in [x for x in self.lab["universe"] if x != "CASH"]:
-            pts = [[r["date"], r["close"]] for r in c.execute(
-                "SELECT date, close FROM prices WHERE ticker=? AND date>=? ORDER BY date",
-                (t, since))]
-            out[t] = pts
+            out[t] = [[r["date"], r["close"]] for r in c.execute(
+                "SELECT date, close FROM prices WHERE ticker=? AND date>=? ORDER BY date", (t, since))]
         return out
 
-    def report(self):
-        return {"markdown": scoring.report(self.conn(), self.lab, date.today().isoformat())}
+    def picks(self, q=None):
+        """مسار الشركات: آخر توصيات كل وكيل + الإجماع + الأداء الورقي لكل شهر."""
+        c = self.conn()
+        lab = self.stocks
+        names = {r[0]: {"name": r[1], "currency": r[2]} for r in
+                 c.execute("SELECT ticker, name, currency FROM securities")}
+        months = []
+        for s in _rows(c.execute("SELECT * FROM sessions WHERE track='stocks' ORDER BY created_at DESC")):
+            agents = {}
+            for r in _rows(c.execute("SELECT * FROM responses WHERE session_id=? ORDER BY agent", (s["id"],))):
+                theses = {}
+                try:
+                    for p in extract_json(r["raw_text"]).get("picks") or []:
+                        theses[str(p.get("ticker", "")).upper()] = p.get("thesis") or ""
+                except Exception:
+                    pass
+                al = _rows(c.execute("SELECT ticker, weight FROM allocations WHERE response_id=? "
+                                     "ORDER BY weight DESC", (r["id"],)))
+                for a in al:
+                    a.update(names.get(a["ticker"], {}))
+                    a["thesis"] = theses.get(a["ticker"], "")
+                agents[r["agent"]] = {"id": r["id"], "model": r["model"], "created_at": r["created_at"],
+                                      "analysis": r["analysis"], "risks": r["risks"], "allocation": al}
+            months.append({"month": s["created_at"][:7], "session_id": s["id"], "agents": agents})
+        perf = scoring.picks_performance(c, lab)
+        for p in perf:
+            p["series"] = investors.thin(p["series"], 200)
+        return {"months": months, "performance": perf, "scoreboard": self.scoreboard(c, "stocks"),
+                "benchmark": lab["benchmark"], "compare": lab.get("compare", []), "fx_fee": lab["fx_fee"]}
+
+    def report(self, q=None):
+        c = self.conn()
+        today = date.today().isoformat()
+        txt = scoring.report(c, self.lab, today)
+        if c.execute("SELECT 1 FROM sessions WHERE track='stocks'").fetchone():
+            txt += "\n\n" + scoring.report(c, self.stocks, today)
+        return {"markdown": txt}
 
     def _files(self, d):
         if not d.is_dir():
@@ -152,7 +218,7 @@ class API:
                             .isoformat(timespec="minutes")})
         return res
 
-    def inbox_list(self):
+    def inbox_list(self, q=None):
         failed = self._files(self.inbox / "failed")
         for f in failed:
             err = self.inbox / "failed" / (f["name"] + ".error")
@@ -161,29 +227,74 @@ class API:
                 "processed": self._files(self.inbox / "processed")[:50],
                 "failed": [f for f in failed if not f["name"].endswith(".error")]}
 
-    def prompt_texts(self):
-        return {a: prompts.app_prompt(self.lab, a, str(self.inbox))
-                for a in prompts.manual_agents(self.cfg)}
+    def prompt_texts(self, q=None):
+        return {t: {a: prompts.app_prompt(self.tcfg(t), a, str(self.inbox))
+                    for a in prompts.manual_agents(self.cfg)} for t in tracks(self.cfg)}
 
-    def log(self):
+    def log(self, q=None):
         p = ROOT / "logs" / "run.log"
         if not p.exists():
             return {"text": ""}
         lines = p.read_text(encoding="utf-8", errors="replace").splitlines()
         return {"text": "\n".join(lines[-300:])}
 
+    # investors
+    def _period(self, q):
+        today = date.today().isoformat()
+        end = (q.get("end") or today)[:10]
+        start = (q.get("start") or (date.today() - timedelta(days=5 * 365)).isoformat())[:10]
+        date.fromisoformat(start), date.fromisoformat(end)
+        return start, min(end, today)
+
+    def investors(self, q=None):
+        q = q or {}
+        start, end = self._period(q)
+        return investors.overview(self.conn(), start, end, float(q.get("amount") or 1000),
+                                  self.stocks["fx_fee"], self.lab["benchmark"])
+
+    def investor(self, q=None):
+        q = q or {}
+        start, end = self._period(q)
+        return investors.detail(self.conn(), q.get("id", ""), start, end, float(q.get("amount") or 1000),
+                                self.stocks["fx_fee"], self.lab["benchmark"])
+
+    # portfolios
+    def portfolio_list(self, q=None):
+        return portfolios.overview(self.conn())
+
+    def portfolio(self, q=None):
+        q = q or {}
+        return portfolios.detail(self.conn(), int(q.get("id", 0)), q.get("start") or None)
+
+    def search(self, q=None):
+        return prices.search((q or {}).get("q", ""), self.conn())
+
+    def quote(self, q=None):
+        c = self.conn()
+        t = self.ensure((q or {}).get("ticker", ""), c)
+        s = c.execute("SELECT * FROM securities WHERE ticker=?", (t,)).fetchone()
+        if not s:
+            raise ValueError(f"{t}: not found on Yahoo Finance")
+        book = prices.Book(c)
+        d = (q or {}).get("date") or date.today().isoformat()
+        return {**dict(s), "price": book.raw(t, d), "price_date": book.last_date(t),
+                "fx": book.fx(t, d), "foreign": book.is_foreign(t)}
+
     # ---------- POST ----------
     def paste(self, body):
         agent = body.get("agent")
+        track = body.get("track") or "etf"
         text = (body.get("text") or "").strip()
         allowed = prompts.manual_agents(self.cfg)
         if agent not in allowed:
             raise ValueError("agent must be one of: " + ", ".join(allowed))
+        if track not in tracks(self.cfg):
+            raise ValueError("unknown track")
         if "{" not in text:
             raise ValueError("the pasted text contains no JSON")
         self.inbox.mkdir(exist_ok=True)
         stamp = datetime.now().strftime("%Y-%m-%d-%H%M%S")
-        p = self.inbox / f"{agent}-{stamp}.txt"
+        p = self.inbox / (f"{agent}-stocks-{stamp}.txt" if track == "stocks" else f"{agent}-{stamp}.txt")
         p.write_text(text, encoding="utf-8")
         # استيراد فوري
         from . import session
@@ -191,13 +302,79 @@ class API:
         session.ingest(self.conn(), self.cfg, self.inbox, log=msgs.append)
         return {"saved": p.name, "log": msgs}
 
-    def update_check(self):
+    def investor_follow(self, b):
+        investors.set_follow(self.conn(), b["id"], b["date"])
+        return {"ok": True}
+
+    def investor_active(self, b):
+        investors.set_active(self.conn(), b["id"], b.get("active", True))
+        return {"ok": True}
+
+    def investor_holdings(self, b):
+        c = self.conn()
+        investors.add_snapshot(c, b["id"], b["as_of"], b["holdings"], lambda t: self.ensure(t, c))
+        return {"ok": True}
+
+    def investor_holdings_delete(self, b):
+        investors.delete_snapshot(self.conn(), b["id"], b["as_of"])
+        return {"ok": True}
+
+    def portfolio_create(self, b):
+        c = self.conn()
+        bm = self.ensure(b.get("benchmark") or self.lab["benchmark"], c)
+        return {"id": portfolios.create(c, b.get("name"), bm, float(b.get("fx_fee", 0.015)),
+                                        b.get("notes", ""))}
+
+    def portfolio_update(self, b):
+        c = self.conn()
+        if b.get("benchmark"):
+            self.ensure(b["benchmark"], c)
+        portfolios.update(c, int(b["id"]), **{k: b.get(k) for k in
+                                              ("name", "benchmark", "fx_fee", "notes", "archived")})
+        return {"ok": True}
+
+    def portfolio_delete(self, b):
+        portfolios.delete(self.conn(), int(b["id"]))
+        return {"ok": True}
+
+    def portfolio_tx(self, b):
+        c = self.conn()
+        portfolios.add_tx(c, int(b["portfolio_id"]), b, lambda t: self.ensure(t, c))
+        return {"ok": True}
+
+    def portfolio_tx_delete(self, b):
+        portfolios.delete_tx(self.conn(), int(b["id"]))
+        return {"ok": True}
+
+    def portfolio_from(self, b):
+        """محفظة جديدة من توصيات وكيل (response_id) أو من محفظة مستثمر (investor)."""
+        c = self.conn()
+        d = (b.get("date") or date.today().isoformat())[:10]
+        amount = float(b.get("amount") or 1000)
+        if b.get("source") == "investor":
+            snaps = investors.snapshots(c, b["id"])
+            eff = [s for s in snaps if s[0] <= d] or snaps[:1]
+            weights = {h["ticker"]: h["weight"] for h in eff[-1][1]}
+            name = b.get("name") or "Copy — " + c.execute("SELECT name FROM investors WHERE id=?",
+                                                          (b["id"],)).fetchone()[0]
+        else:
+            r = c.execute("SELECT r.agent, s.created_at FROM responses r JOIN sessions s ON s.id=r.session_id "
+                          "WHERE r.id=?", (int(b["id"]),)).fetchone()
+            weights = {a["ticker"]: a["weight"] for a in c.execute(
+                "SELECT ticker, weight FROM allocations WHERE response_id=?", (int(b["id"]),))}
+            name = b.get("name") or f"AI picks — {r['agent']} {r['created_at'][:7]}"
+        pid, errors = portfolios.create_from_weights(
+            c, name, weights, amount, d, self.lab["benchmark"], self.stocks["fx_fee"],
+            lambda t: self.ensure(t, c), note=name)
+        return {"id": pid, "errors": errors}
+
+    def update_check(self, q=None):
         return updates.check(self.cfg)
 
-    def update_log(self):
+    def update_log(self, q=None):
         return updates.log_tail()
 
-    def update_install(self):
+    def update_install(self, b=None):
         if _run_state["running"]:
             raise ValueError("a run is in progress — try again when it finishes")
         info = updates.check(self.cfg)
@@ -207,7 +384,7 @@ class API:
             return {"started": False, "reason": "already up to date", **info}
         return {**updates.start(self.cfg, self.port), **info}
 
-    def run_now(self):
+    def run_now(self, b=None):
         if not _run_lock.acquire(blocking=False):
             return {"started": False, "reason": "already running"}
 
@@ -237,10 +414,25 @@ class API:
 def make_handler(api: API):
     routes_get = {"/api/config": api.config, "/api/overview": api.overview,
                   "/api/sessions": api.sessions, "/api/forecasts": api.forecasts,
-                  "/api/prices": api.prices, "/api/report": api.report,
+                  "/api/prices": api.prices, "/api/picks": api.picks, "/api/report": api.report,
                   "/api/inbox": api.inbox_list, "/api/prompts": api.prompt_texts,
                   "/api/log": api.log, "/api/update/check": api.update_check,
-                  "/api/update/log": api.update_log}
+                  "/api/update/log": api.update_log,
+                  "/api/investors": api.investors, "/api/investor": api.investor,
+                  "/api/portfolios": api.portfolio_list, "/api/portfolio": api.portfolio,
+                  "/api/search": api.search, "/api/quote": api.quote}
+    routes_post = {"/api/paste": api.paste, "/api/run": api.run_now,
+                   "/api/update/install": api.update_install,
+                   "/api/investor/follow": api.investor_follow,
+                   "/api/investor/active": api.investor_active,
+                   "/api/investor/holdings": api.investor_holdings,
+                   "/api/investor/holdings/delete": api.investor_holdings_delete,
+                   "/api/portfolio/create": api.portfolio_create,
+                   "/api/portfolio/update": api.portfolio_update,
+                   "/api/portfolio/delete": api.portfolio_delete,
+                   "/api/portfolio/tx": api.portfolio_tx,
+                   "/api/portfolio/tx/delete": api.portfolio_tx_delete,
+                   "/api/portfolio/from": api.portfolio_from}
 
     class H(BaseHTTPRequestHandler):
         def log_message(self, *a):
@@ -257,13 +449,14 @@ def make_handler(api: API):
             self.wfile.write(data)
 
         def do_GET(self):
-            path = urlparse(self.path).path
+            u = urlparse(self.path)
+            q = {k: v[-1] for k, v in parse_qs(u.query).items()}
             try:
-                if path in ("/", "/index.html"):
+                if u.path in ("/", "/index.html"):
                     return self._send(200, (STATIC / "index.html").read_bytes(),
                                       "text/html; charset=utf-8")
-                if path in routes_get:
-                    return self._send(200, routes_get[path]())
+                if u.path in routes_get:
+                    return self._send(200, routes_get[u.path](q))
                 self._send(404, {"error": "not found"})
             except Exception as e:
                 self._send(500, {"error": str(e)})
@@ -277,12 +470,8 @@ def make_handler(api: API):
             try:
                 n = int(self.headers.get("content-length", 0))
                 body = json.loads(self.rfile.read(n) or b"{}")
-                if path == "/api/paste":
-                    return self._send(200, api.paste(body))
-                if path == "/api/run":
-                    return self._send(200, api.run_now())
-                if path == "/api/update/install":
-                    return self._send(200, api.update_install())
+                if path in routes_post:
+                    return self._send(200, routes_post[path](body))
                 self._send(404, {"error": "not found"})
             except Exception as e:
                 self._send(400, {"error": str(e)})

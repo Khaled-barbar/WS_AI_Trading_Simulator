@@ -1,0 +1,1673 @@
+{
+ "version": "2026-11-20",
+ "source": "Investor-Watchlist-Final-2026-11.xlsx",
+ "as_of": "2026-11-20",
+ "investors": [
+  {
+   "id": "berkshire",
+   "list": "stocks",
+   "rank": 1,
+   "name": "Berkshire Hathaway (Buffett → Greg Abel)",
+   "kind": "Professional – 13F",
+   "style": "Value / quality",
+   "since": "1965",
+   "url": "https://www.dataroma.com/m/holdings.php?m=BRK",
+   "five_y": null,
+   "record": "19.7%/yr 1965–2025 vs S&P 500 10.5% (secondary source citing annual report). 2025: +10.9% vs +17.9%.",
+   "reported": {},
+   "top_text": "AAPL 25.0%, AXP 15.2%, KO 11.3%, GOOGL 8.9%, BAC 8.2% (30 holdings, $304B)",
+   "caveat": "Abel CEO since 1-Jan-2026 — watch for process change. 13F = US equities only.",
+   "verdict": "KEEP",
+   "found_by": "Claude",
+   "score": 92,
+   "proxy": "BRK-B",
+   "benchmarks": [
+    "SPY",
+    "URTH"
+   ],
+   "notes": "",
+   "holdings": [
+    {
+     "ticker": "AAPL",
+     "weight": 0.25,
+     "estimated": false
+    },
+    {
+     "ticker": "AXP",
+     "weight": 0.152,
+     "estimated": false
+    },
+    {
+     "ticker": "KO",
+     "weight": 0.113,
+     "estimated": false
+    },
+    {
+     "ticker": "GOOGL",
+     "weight": 0.089,
+     "estimated": false
+    },
+    {
+     "ticker": "BAC",
+     "weight": 0.082,
+     "estimated": false
+    }
+   ]
+  },
+  {
+   "id": "jeppekirkbonde",
+   "list": "stocks",
+   "rank": 2,
+   "name": "JeppeKirkBonde (Jeppe Kirk Bonde)",
+   "kind": "eToro Popular Investor",
+   "style": "Long-term diversified",
+   "since": "2013",
+   "url": "https://www.etoro.com/people/JeppeKirkBonde/stats",
+   "five_y": 0.674,
+   "record": "Calendar years: 2022 −19.2%, 2023 +23.9%, 2024 +21.0%, 2025 +37.7%, 2026 YTD +0.4%. Risk 4.",
+   "reported": {
+    "2022": -0.192,
+    "2023": 0.239,
+    "2024": 0.21,
+    "2025": 0.377,
+    "2026 YTD": 0.004
+   },
+   "top_text": "TSM 8.6%, MU 6.8%, META 3.8%, NVDA, EQT (61 positions, 96% stocks)",
+   "caveat": "Avg hold 34 months — closest to buy-and-hold. Holds frozen Russian line.",
+   "verdict": "KEEP",
+   "found_by": "ChatGPT",
+   "score": 92,
+   "proxy": null,
+   "benchmarks": [
+    "SPY",
+    "URTH"
+   ],
+   "notes": "",
+   "holdings": [
+    {
+     "ticker": "TSM",
+     "weight": 0.086,
+     "estimated": false
+    },
+    {
+     "ticker": "MU",
+     "weight": 0.068,
+     "estimated": false
+    },
+    {
+     "ticker": "META",
+     "weight": 0.038,
+     "estimated": false
+    },
+    {
+     "ticker": "NVDA",
+     "weight": 0.0139,
+     "estimated": true
+    },
+    {
+     "ticker": "EQT.ST",
+     "weight": 0.0139,
+     "estimated": true
+    }
+   ]
+  },
+  {
+   "id": "giverny",
+   "list": "stocks",
+   "rank": 3,
+   "name": "François Rochon – Giverny Capital",
+   "kind": "Professional – 13F + letters",
+   "style": "Quality / value",
+   "since": "1993",
+   "url": "https://www.dataroma.com/m/holdings.php?m=GC",
+   "five_y": null,
+   "record": "Rochon Global Portfolio 13.4%/yr net since 1993 vs S&P 500 10.8% (Mar-2026). 5y to Q3-2025: 15.3%/yr vs 16.5%.",
+   "reported": {},
+   "top_text": "META 7.2%, GOOG 6.8%, SCHW 5.7%, HEI.A 5.6%, ADP 5.6% (51 holdings)",
+   "caveat": "Lagging index recently; Constellation Software −26% in 2025.",
+   "verdict": "KEEP",
+   "found_by": "Claude",
+   "score": 90,
+   "proxy": null,
+   "benchmarks": [
+    "SPY",
+    "URTH"
+   ],
+   "notes": "HEI.A in the workbook = HEI-A on Yahoo.",
+   "holdings": [
+    {
+     "ticker": "META",
+     "weight": 0.072,
+     "estimated": false
+    },
+    {
+     "ticker": "GOOG",
+     "weight": 0.068,
+     "estimated": false
+    },
+    {
+     "ticker": "SCHW",
+     "weight": 0.057,
+     "estimated": false
+    },
+    {
+     "ticker": "HEI-A",
+     "weight": 0.056,
+     "estimated": false
+    },
+    {
+     "ticker": "ADP",
+     "weight": 0.056,
+     "estimated": false
+    }
+   ]
+  },
+  {
+   "id": "pershing",
+   "list": "stocks",
+   "rank": 4,
+   "name": "Bill Ackman – Pershing Square Holdings (PSH)",
+   "kind": "Professional – listed fund",
+   "style": "Concentrated activist",
+   "since": "2004 / PSH 2012",
+   "url": "https://pershingsquareholdings.com",
+   "five_y": null,
+   "record": "PSH NAV 12.5%/yr Dec-2012→Aug-2026 vs S&P 15.2%; strategy since 2004 15.6%/yr vs 11.0%. 2025 +20.9%; H1-2026 −12.6%.",
+   "reported": {},
+   "top_text": "Pershing Square Inc. 33.5% (own mgmt co.), UBER 7.6%, AMZN 6.9%, MSFT 6.8%, META 6.7%",
+   "caveat": "Weekly NAV = cleanest series. Weak 2026. PSUS/PS listed on NYSE Apr-2026.",
+   "verdict": "KEEP",
+   "found_by": "Claude",
+   "score": 89,
+   "proxy": "PSH.L",
+   "benchmarks": [
+    "SPY",
+    "URTH"
+   ],
+   "notes": "Pershing Square Inc. (33.5%, private management company) cannot be bought — the copy uses the listed stakes; PSH.L shows the fund's real record.",
+   "holdings": [
+    {
+     "ticker": "UBER",
+     "weight": 0.076,
+     "estimated": false
+    },
+    {
+     "ticker": "AMZN",
+     "weight": 0.069,
+     "estimated": false
+    },
+    {
+     "ticker": "MSFT",
+     "weight": 0.068,
+     "estimated": false
+    },
+    {
+     "ticker": "META",
+     "weight": 0.067,
+     "estimated": false
+    }
+   ]
+  },
+  {
+   "id": "fundmanagerzech",
+   "list": "stocks",
+   "rank": 5,
+   "name": "FundManagerZech (Zechariah Bin Zheng)",
+   "kind": "eToro Popular Investor",
+   "style": "Multi-sector small/mid",
+   "since": "2016",
+   "url": "https://www.etoro.com/people/FundManagerZech/stats",
+   "five_y": 0.684,
+   "record": "2022 −11.9%, 2023 +24.7%, 2024 +20.7%, 2025 +21.2%, 2026 YTD +4.8%. Risk 4.",
+   "reported": {
+    "2022": -0.11900000000000001,
+    "2023": 0.247,
+    "2024": 0.207,
+    "2025": 0.212,
+    "2026 YTD": 0.048
+   },
+   "top_text": "Gecina 10.3%, BHF 10.2%, China Railway, Yalla, Euronet, ZIM (23 pos.; 4.8% crypto)",
+   "caveat": "10+ year record confirmed.",
+   "verdict": "KEEP",
+   "found_by": "ChatGPT",
+   "score": 89,
+   "proxy": null,
+   "benchmarks": [
+    "SPY",
+    "URTH"
+   ],
+   "notes": "",
+   "holdings": [
+    {
+     "ticker": "GFC.PA",
+     "weight": 0.103,
+     "estimated": false
+    },
+    {
+     "ticker": "BHF",
+     "weight": 0.102,
+     "estimated": false
+    },
+    {
+     "ticker": "0390.HK",
+     "weight": 0.0379,
+     "estimated": true
+    },
+    {
+     "ticker": "YALA",
+     "weight": 0.0379,
+     "estimated": true
+    },
+    {
+     "ticker": "EEFT",
+     "weight": 0.0379,
+     "estimated": true
+    },
+    {
+     "ticker": "ZIM",
+     "weight": 0.0379,
+     "estimated": true
+    }
+   ]
+  },
+  {
+   "id": "russo",
+   "list": "stocks",
+   "rank": 6,
+   "name": "Tom Russo – Gardner Russo & Quinn",
+   "kind": "Professional – 13F",
+   "style": "Global consumer brands",
+   "since": "1990",
+   "url": "https://www.dataroma.com/m/holdings.php?m=GR",
+   "five_y": null,
+   "record": "Semper Vic ≈11.5%/yr since 1990 vs S&P 10.8% to Q3-2025 (secondary source + Apr-2026 Ivey talk).",
+   "reported": {},
+   "top_text": "BRK.A 12.4%, GOOG 11.8%, PM 9.9%, MA 9.6%, Richemont 8.2% (84 holdings)",
+   "caveat": "Succession risk (manager in 70s). Very low turnover.",
+   "verdict": "KEEP",
+   "found_by": "Claude",
+   "score": 86,
+   "proxy": null,
+   "benchmarks": [
+    "SPY",
+    "URTH"
+   ],
+   "notes": "BRK.A shown as BRK-B (same company).",
+   "holdings": [
+    {
+     "ticker": "BRK-B",
+     "weight": 0.124,
+     "estimated": false
+    },
+    {
+     "ticker": "GOOG",
+     "weight": 0.118,
+     "estimated": false
+    },
+    {
+     "ticker": "PM",
+     "weight": 0.099,
+     "estimated": false
+    },
+    {
+     "ticker": "MA",
+     "weight": 0.096,
+     "estimated": false
+    },
+    {
+     "ticker": "CFR.SW",
+     "weight": 0.082,
+     "estimated": false
+    }
+   ]
+  },
+  {
+   "id": "fundsmith",
+   "list": "stocks",
+   "rank": 7,
+   "name": "Terry Smith – Fundsmith Equity",
+   "kind": "Professional – fund factsheet",
+   "style": "Quality compounders",
+   "since": "2010",
+   "url": "https://www.fundsmith.eu/factsheet/",
+   "five_y": null,
+   "record": "13.3%/yr since 2010 vs MSCI World 13.4% (EUR, Oct-2026) — now trails index since launch. 2025 −4.5% vs +6.8%.",
+   "reported": {},
+   "top_text": "WAT 7.7%, V 6.3%, MA 6.2%, VEEV 6.0%, SYK 5.7%",
+   "caveat": "5+ yrs underperformance, assets £29B→£12B, record 51% turnover H1-2026 (style drift).",
+   "verdict": "KEEP-WITH-CAVEAT",
+   "found_by": "Claude",
+   "score": 84,
+   "proxy": null,
+   "benchmarks": [
+    "SPY",
+    "URTH"
+   ],
+   "notes": "",
+   "holdings": [
+    {
+     "ticker": "WAT",
+     "weight": 0.077,
+     "estimated": false
+    },
+    {
+     "ticker": "V",
+     "weight": 0.063,
+     "estimated": false
+    },
+    {
+     "ticker": "MA",
+     "weight": 0.062,
+     "estimated": false
+    },
+    {
+     "ticker": "VEEV",
+     "weight": 0.06,
+     "estimated": false
+    },
+    {
+     "ticker": "SYK",
+     "weight": 0.057,
+     "estimated": false
+    }
+   ]
+  },
+  {
+   "id": "michalhla",
+   "list": "stocks",
+   "rank": 8,
+   "name": "Michalhla (Michal Hlavacka)",
+   "kind": "eToro Popular Investor",
+   "style": "Quality growth, global",
+   "since": "2020",
+   "url": "https://www.etoro.com/people/Michalhla/stats",
+   "five_y": 3.612,
+   "record": "2022 +8.4%, 2023 +58.6%, 2024 +84.2%, 2025 +46.4%, 2026 YTD −0.5%. No negative full year. Risk 4.",
+   "reported": {
+    "2022": 0.084,
+    "2023": 0.586,
+    "2024": 0.8420000000000001,
+    "2025": 0.46399999999999997,
+    "2026 YTD": -0.005
+   },
+   "top_text": "TSM 10.5%, AMZN 7.8%, NU 6.8%, BRK.B 6.5%, PDD, ASML (29 pos.; 11.6% T-bill ETF)",
+   "caveat": "Exceptional returns — monitor for mean reversion.",
+   "verdict": "KEEP",
+   "found_by": "ChatGPT",
+   "score": 84,
+   "proxy": null,
+   "benchmarks": [
+    "SPY",
+    "URTH"
+   ],
+   "notes": "11.6% T-bill ETF shown as SGOV (US T-bill ETF).",
+   "holdings": [
+    {
+     "ticker": "TSM",
+     "weight": 0.105,
+     "estimated": false
+    },
+    {
+     "ticker": "AMZN",
+     "weight": 0.078,
+     "estimated": false
+    },
+    {
+     "ticker": "NU",
+     "weight": 0.068,
+     "estimated": false
+    },
+    {
+     "ticker": "BRK-B",
+     "weight": 0.065,
+     "estimated": false
+    },
+    {
+     "ticker": "PDD",
+     "weight": 0.0237,
+     "estimated": true
+    },
+    {
+     "ticker": "ASML",
+     "weight": 0.0237,
+     "estimated": true
+    },
+    {
+     "ticker": "SGOV",
+     "weight": 0.116,
+     "estimated": false
+    }
+   ]
+  },
+  {
+   "id": "ingruc",
+   "list": "stocks",
+   "rank": 9,
+   "name": "ingruc (Ingvar Rueckemann)",
+   "kind": "eToro Popular Investor",
+   "style": "Value",
+   "since": "2020",
+   "url": "https://www.etoro.com/people/ingruc/stats",
+   "five_y": 0.896,
+   "record": "2022 +8.7%, 2023 +16.5%, 2024 +4.3%, 2025 +34.9%, 2026 YTD +6.4%. No negative year. Risk 5.",
+   "reported": {
+    "2022": 0.087,
+    "2023": 0.165,
+    "2024": 0.043,
+    "2025": 0.349,
+    "2026 YTD": 0.064
+   },
+   "top_text": "BN 11.1%, YELP 9.4%, PYPL, WIX, Teleperformance, TeamViewer, Prosus (22 stocks)",
+   "caveat": "Small MARA/MSTR positions; leverage not verifiable logged-out.",
+   "verdict": "KEEP",
+   "found_by": "ChatGPT",
+   "score": 83,
+   "proxy": null,
+   "benchmarks": [
+    "SPY",
+    "URTH"
+   ],
+   "notes": "",
+   "holdings": [
+    {
+     "ticker": "BN",
+     "weight": 0.111,
+     "estimated": false
+    },
+    {
+     "ticker": "YELP",
+     "weight": 0.094,
+     "estimated": false
+    },
+    {
+     "ticker": "PYPL",
+     "weight": 0.0398,
+     "estimated": true
+    },
+    {
+     "ticker": "WIX",
+     "weight": 0.0398,
+     "estimated": true
+    },
+    {
+     "ticker": "TEP.PA",
+     "weight": 0.0398,
+     "estimated": true
+    },
+    {
+     "ticker": "TMV.DE",
+     "weight": 0.0398,
+     "estimated": true
+    },
+    {
+     "ticker": "PRX.AS",
+     "weight": 0.0398,
+     "estimated": true
+    }
+   ]
+  },
+  {
+   "id": "lilu",
+   "list": "stocks",
+   "rank": 10,
+   "name": "Li Lu – Himalaya Capital",
+   "kind": "Professional – 13F",
+   "style": "Deep value, very concentrated",
+   "since": "1997",
+   "url": "https://www.dataroma.com/m/holdings.php?m=HC",
+   "five_y": null,
+   "record": "Only dated figure: 26.4%/yr 1998–2010 vs S&P 2.25%. Current returns not public.",
+   "reported": {},
+   "top_text": "PDD 24.2%, GOOGL+GOOG 45.2%, BRK.B 14.6%, EWBC 9.1% (8 holdings)",
+   "caveat": "Returns not verifiable; track via holdings only.",
+   "verdict": "KEEP",
+   "found_by": "Claude",
+   "score": 81,
+   "proxy": null,
+   "benchmarks": [
+    "SPY",
+    "URTH"
+   ],
+   "notes": "GOOGL + GOOG combined as GOOGL.",
+   "holdings": [
+    {
+     "ticker": "GOOGL",
+     "weight": 0.452,
+     "estimated": false
+    },
+    {
+     "ticker": "PDD",
+     "weight": 0.242,
+     "estimated": false
+    },
+    {
+     "ticker": "BRK-B",
+     "weight": 0.146,
+     "estimated": false
+    },
+    {
+     "ticker": "EWBC",
+     "weight": 0.091,
+     "estimated": false
+    }
+   ]
+  },
+  {
+   "id": "triangulacapital",
+   "list": "stocks",
+   "rank": 11,
+   "name": "triangulacapital (Pietari Laurila)",
+   "kind": "eToro Popular Investor",
+   "style": "European value",
+   "since": "2020",
+   "url": "https://www.etoro.com/people/triangulacapital/stats",
+   "five_y": 1.217,
+   "record": "2022 +1.6%, 2023 +31.8%, 2024 +22.7%, 2025 +46.1%, 2026 YTD −7.6%. Risk 4.",
+   "reported": {
+    "2022": 0.016,
+    "2023": 0.318,
+    "2024": 0.22699999999999998,
+    "2025": 0.461,
+    "2026 YTD": -0.076
+   },
+   "top_text": "UMG, Sanofi, Eurazeo, Jerónimo Martins, Vinci, AIA, AZN (20 stocks)",
+   "caveat": "1,026 trades/12m — high turnover for a 'value' label.",
+   "verdict": "KEEP-WITH-CAVEAT",
+   "found_by": "ChatGPT",
+   "score": 81,
+   "proxy": null,
+   "benchmarks": [
+    "SPY",
+    "URTH"
+   ],
+   "notes": "No weights published: the 7 listed stocks get an equal 1/20 each (20 positions).",
+   "holdings": [
+    {
+     "ticker": "UMG.AS",
+     "weight": 0.05,
+     "estimated": true
+    },
+    {
+     "ticker": "SAN.PA",
+     "weight": 0.05,
+     "estimated": true
+    },
+    {
+     "ticker": "RF.PA",
+     "weight": 0.05,
+     "estimated": true
+    },
+    {
+     "ticker": "JMT.LS",
+     "weight": 0.05,
+     "estimated": true
+    },
+    {
+     "ticker": "DG.PA",
+     "weight": 0.05,
+     "estimated": true
+    },
+    {
+     "ticker": "1299.HK",
+     "weight": 0.05,
+     "estimated": true
+    },
+    {
+     "ticker": "AZN",
+     "weight": 0.05,
+     "estimated": true
+    }
+   ]
+  },
+  {
+   "id": "cfranklin89",
+   "list": "stocks",
+   "rank": 12,
+   "name": "Cfranklin89",
+   "kind": "eToro Popular Investor",
+   "style": "Quality value, stocks + ETF",
+   "since": "2019",
+   "url": "https://www.etoro.com/people/Cfranklin89/stats",
+   "five_y": 1.329,
+   "record": "2021 +187%, 2022 −26.6%, 2023 +111.5%, 2024 +16.5%, 2025 +26.3%, 2026 YTD +1.9%. Risk 3.",
+   "reported": {
+    "2021": 1.87,
+    "2022": -0.266,
+    "2023": 1.115,
+    "2024": 0.165,
+    "2025": 0.263,
+    "2026 YTD": 0.019
+   },
+   "top_text": "MA 8.3%, SPGI 7.8%, AMZN, GOOG, UBER; ETFs 23% (IB01, XLV, IEF)",
+   "caveat": "Avg hold 14.5 months; small following (722 copiers).",
+   "verdict": "KEEP",
+   "found_by": "ChatGPT",
+   "score": 81,
+   "proxy": null,
+   "benchmarks": [
+    "SPY",
+    "URTH"
+   ],
+   "notes": "ETFs = 23% split equally across IB01, XLV and IEF (exact split not published).",
+   "holdings": [
+    {
+     "ticker": "MA",
+     "weight": 0.083,
+     "estimated": false
+    },
+    {
+     "ticker": "SPGI",
+     "weight": 0.078,
+     "estimated": false
+    },
+    {
+     "ticker": "AMZN",
+     "weight": 0.076,
+     "estimated": true
+    },
+    {
+     "ticker": "GOOG",
+     "weight": 0.076,
+     "estimated": true
+    },
+    {
+     "ticker": "UBER",
+     "weight": 0.076,
+     "estimated": true
+    },
+    {
+     "ticker": "IB01.L",
+     "weight": 0.077,
+     "estimated": false
+    },
+    {
+     "ticker": "XLV",
+     "weight": 0.077,
+     "estimated": false
+    },
+    {
+     "ticker": "IEF",
+     "weight": 0.076,
+     "estimated": false
+    }
+   ]
+  },
+  {
+   "id": "mick_repo",
+   "list": "stocks",
+   "rank": 13,
+   "name": "mick_repo (Miska Repo)",
+   "kind": "eToro Popular Investor",
+   "style": "Value / dividends, staples",
+   "since": "2021",
+   "url": "https://www.etoro.com/people/mick_repo/stats",
+   "five_y": 1.633,
+   "record": "2022 +6.3%, 2023 +16.0%, 2024 +26.1%, 2025 +52.7%, 2026 YTD +10.9%. No negative year. Risk 4.",
+   "reported": {
+    "2022": 0.063,
+    "2023": 0.16,
+    "2024": 0.261,
+    "2025": 0.527,
+    "2026 YTD": 0.109
+   },
+   "top_text": "RKT 9.3%, UL 9.2%, GSK 9.0%, Vonovia 8.2%, PEP, DEO, HLN (14 stocks; 17.9% cash)",
+   "caveat": "Exactly 5 years of history.",
+   "verdict": "KEEP",
+   "found_by": "ChatGPT",
+   "score": 81,
+   "proxy": null,
+   "benchmarks": [
+    "SPY",
+    "URTH"
+   ],
+   "notes": "",
+   "holdings": [
+    {
+     "ticker": "RKT.L",
+     "weight": 0.093,
+     "estimated": false
+    },
+    {
+     "ticker": "UL",
+     "weight": 0.092,
+     "estimated": false
+    },
+    {
+     "ticker": "GSK",
+     "weight": 0.09,
+     "estimated": false
+    },
+    {
+     "ticker": "VNA.DE",
+     "weight": 0.082,
+     "estimated": false
+    },
+    {
+     "ticker": "PEP",
+     "weight": 0.0464,
+     "estimated": true
+    },
+    {
+     "ticker": "DEO",
+     "weight": 0.0464,
+     "estimated": true
+    },
+    {
+     "ticker": "HLN",
+     "weight": 0.0464,
+     "estimated": true
+    },
+    {
+     "ticker": "CASH",
+     "weight": 0.179,
+     "estimated": false
+    }
+   ]
+  },
+  {
+   "id": "klarman",
+   "list": "stocks",
+   "rank": 14,
+   "name": "Seth Klarman – Baupost",
+   "kind": "Professional – 13F",
+   "style": "Value / margin of safety",
+   "since": "1982",
+   "url": "https://www.dataroma.com/m/holdings.php?m=BAUPOST",
+   "five_y": null,
+   "record": "≈20%/yr first 26 yrs; ≈4%/yr since 2014; $7B client outflows 2021–24 (Bloomberg Jan-2025).",
+   "reported": {},
+   "top_text": "AMZN 18.5%, ELV 9.8%, QSR 9.5%, GPC 7.7%, FERG 6.9% (21 holdings)",
+   "caveat": "13F is a small slice of AUM; recent returns weak.",
+   "verdict": "KEEP-WITH-CAVEAT",
+   "found_by": "Claude",
+   "score": 80,
+   "proxy": null,
+   "benchmarks": [
+    "SPY",
+    "URTH"
+   ],
+   "notes": "",
+   "holdings": [
+    {
+     "ticker": "AMZN",
+     "weight": 0.185,
+     "estimated": false
+    },
+    {
+     "ticker": "ELV",
+     "weight": 0.098,
+     "estimated": false
+    },
+    {
+     "ticker": "QSR",
+     "weight": 0.095,
+     "estimated": false
+    },
+    {
+     "ticker": "GPC",
+     "weight": 0.077,
+     "estimated": false
+    },
+    {
+     "ticker": "FERG",
+     "weight": 0.069,
+     "estimated": false
+    }
+   ]
+  },
+  {
+   "id": "smudliczek",
+   "list": "stocks",
+   "rank": 15,
+   "name": "Smudliczek (Dan Hamernik)",
+   "kind": "eToro Popular Investor",
+   "style": "Multi-strategy, tech & defense",
+   "since": "2019",
+   "url": "https://www.etoro.com/people/Smudliczek/stats",
+   "five_y": 1.567,
+   "record": "2022 −36.1%, 2023 +65.3%, 2024 +32.1%, 2025 +80.2%, 2026 YTD +2.0%. Risk 4.",
+   "reported": {
+    "2022": -0.361,
+    "2023": 0.653,
+    "2024": 0.321,
+    "2025": 0.802,
+    "2026 YTD": 0.02
+   },
+   "top_text": "Samsung 7.7%, Rolls-Royce 5.4%, DELL 4.8%, Rheinmetall 4.6%, RTX, NU, MU (59 stocks)",
+   "caveat": "Large drawdowns (−36% in 2022). Frozen Russian lines.",
+   "verdict": "KEEP-WITH-CAVEAT",
+   "found_by": "ChatGPT",
+   "score": 80,
+   "proxy": null,
+   "benchmarks": [
+    "SPY",
+    "URTH"
+   ],
+   "notes": "",
+   "holdings": [
+    {
+     "ticker": "005930.KS",
+     "weight": 0.077,
+     "estimated": false
+    },
+    {
+     "ticker": "RR.L",
+     "weight": 0.054,
+     "estimated": false
+    },
+    {
+     "ticker": "DELL",
+     "weight": 0.048,
+     "estimated": false
+    },
+    {
+     "ticker": "RHM.DE",
+     "weight": 0.046,
+     "estimated": false
+    },
+    {
+     "ticker": "RTX",
+     "weight": 0.0141,
+     "estimated": true
+    },
+    {
+     "ticker": "NU",
+     "weight": 0.0141,
+     "estimated": true
+    },
+    {
+     "ticker": "MU",
+     "weight": 0.0141,
+     "estimated": true
+    }
+   ]
+  },
+  {
+   "id": "mcgintye",
+   "list": "stocks",
+   "rank": 16,
+   "name": "MCGINTYE (Eamonn McGinty)",
+   "kind": "eToro Popular Investor",
+   "style": "UK income / dividends",
+   "since": "2021",
+   "url": "https://www.etoro.com/people/MCGINTYE/stats",
+   "five_y": 1.368,
+   "record": "2022 +7.4%, 2023 +11.5%, 2024 +22.3%, 2025 +44.6%, 2026 YTD +11.8%. No negative year. Risk 4.",
+   "reported": {
+    "2022": 0.07400000000000001,
+    "2023": 0.115,
+    "2024": 0.223,
+    "2025": 0.446,
+    "2026 YTD": 0.11800000000000001
+   },
+   "top_text": "Taylor Wimpey 9.0%, Barratt 8.9%, PHP 7.4%, BATS 6.1%, L&G, LLOY (33 UK stocks)",
+   "caveat": "889 trades/12m — active for an income style; UK-only.",
+   "verdict": "KEEP",
+   "found_by": "ChatGPT",
+   "score": 78,
+   "proxy": null,
+   "benchmarks": [
+    "SPY",
+    "URTH"
+   ],
+   "notes": "",
+   "holdings": [
+    {
+     "ticker": "TW.L",
+     "weight": 0.09,
+     "estimated": false
+    },
+    {
+     "ticker": "BTRW.L",
+     "weight": 0.089,
+     "estimated": false
+    },
+    {
+     "ticker": "PHP.L",
+     "weight": 0.074,
+     "estimated": false
+    },
+    {
+     "ticker": "BATS.L",
+     "weight": 0.061,
+     "estimated": false
+    },
+    {
+     "ticker": "LGEN.L",
+     "weight": 0.0237,
+     "estimated": true
+    },
+    {
+     "ticker": "LLOY.L",
+     "weight": 0.0237,
+     "estimated": true
+    }
+   ]
+  },
+  {
+   "id": "druckenmiller",
+   "list": "stocks",
+   "rank": 17,
+   "name": "Stanley Druckenmiller – Duquesne FO",
+   "kind": "Professional – 13F",
+   "style": "Macro + growth",
+   "since": "1981",
+   "url": "https://whalewisdom.com/filer/duquesne-family-office-llc",
+   "five_y": null,
+   "record": "Duquesne Capital ≈30%/yr 1986–2010 (widely cited, not primary). Family office publishes no returns.",
+   "reported": {},
+   "top_text": "NTRA 29.2%, STX 7.1%, AMZN 4.3%, FOXA 4.3%, YPF 4.0% (65 positions)",
+   "caveat": "High turnover; no return series — holdings only.",
+   "verdict": "KEEP-WITH-CAVEAT",
+   "found_by": "Claude",
+   "score": 78,
+   "proxy": null,
+   "benchmarks": [
+    "SPY",
+    "URTH"
+   ],
+   "notes": "",
+   "holdings": [
+    {
+     "ticker": "NTRA",
+     "weight": 0.292,
+     "estimated": false
+    },
+    {
+     "ticker": "STX",
+     "weight": 0.071,
+     "estimated": false
+    },
+    {
+     "ticker": "AMZN",
+     "weight": 0.043,
+     "estimated": false
+    },
+    {
+     "ticker": "FOXA",
+     "weight": 0.043,
+     "estimated": false
+    },
+    {
+     "ticker": "YPF",
+     "weight": 0.04,
+     "estimated": false
+    }
+   ]
+  },
+  {
+   "id": "kantesaria",
+   "list": "stocks",
+   "rank": 18,
+   "name": "Dev Kantesaria – Valley Forge",
+   "kind": "Professional – 13F",
+   "style": "Toll-road monopolies",
+   "since": "2007",
+   "url": "https://www.dataroma.com/m/holdings.php?m=VFC",
+   "five_y": null,
+   "record": "14.2%/yr net mid-2007→2019 vs S&P 8.0% (Value Investor Insight). Current returns not public.",
+   "reported": {},
+   "top_text": "SPGI 21.7%, MCO 16.4%, FICO 15.0%, ASML 15.0%, AMZN 7.0% (10 holdings)",
+   "caveat": "Returns not verifiable after 2019.",
+   "verdict": "KEEP",
+   "found_by": "Claude",
+   "score": 77,
+   "proxy": null,
+   "benchmarks": [
+    "SPY",
+    "URTH"
+   ],
+   "notes": "",
+   "holdings": [
+    {
+     "ticker": "SPGI",
+     "weight": 0.217,
+     "estimated": false
+    },
+    {
+     "ticker": "MCO",
+     "weight": 0.164,
+     "estimated": false
+    },
+    {
+     "ticker": "FICO",
+     "weight": 0.15,
+     "estimated": false
+    },
+    {
+     "ticker": "ASML",
+     "weight": 0.15,
+     "estimated": false
+    },
+    {
+     "ticker": "AMZN",
+     "weight": 0.07,
+     "estimated": false
+    }
+   ]
+  },
+  {
+   "id": "space_investor",
+   "list": "stocks",
+   "rank": 19,
+   "name": "Space-Investor (Jason Horton)",
+   "kind": "eToro Popular Investor",
+   "style": "Thematic: space/defense/IT",
+   "since": "2021",
+   "url": "https://www.etoro.com/people/Space-Investor/stats",
+   "five_y": 2.118,
+   "record": "2022 +7.8%, 2023 +27.0%, 2024 +46.5%, 2025 +53.1%, 2026 YTD +1.5%. Risk 4.",
+   "reported": {
+    "2022": 0.078,
+    "2023": 0.27,
+    "2024": 0.465,
+    "2025": 0.531,
+    "2026 YTD": 0.015
+   },
+   "top_text": "GOOGL 5.2%, LDOS, Gilat, KBR, GSAT, Serco, CACI, LMT (40 stocks; 21% cash)",
+   "caveat": "Theme concentration.",
+   "verdict": "KEEP",
+   "found_by": "ChatGPT",
+   "score": 77,
+   "proxy": null,
+   "benchmarks": [
+    "SPY",
+    "URTH"
+   ],
+   "notes": "",
+   "holdings": [
+    {
+     "ticker": "GOOGL",
+     "weight": 0.052,
+     "estimated": false
+    },
+    {
+     "ticker": "LDOS",
+     "weight": 0.0189,
+     "estimated": true
+    },
+    {
+     "ticker": "GILT",
+     "weight": 0.0189,
+     "estimated": true
+    },
+    {
+     "ticker": "KBR",
+     "weight": 0.0189,
+     "estimated": true
+    },
+    {
+     "ticker": "GSAT",
+     "weight": 0.0189,
+     "estimated": true
+    },
+    {
+     "ticker": "SRP.L",
+     "weight": 0.0189,
+     "estimated": true
+    },
+    {
+     "ticker": "CACI",
+     "weight": 0.0189,
+     "estimated": true
+    },
+    {
+     "ticker": "LMT",
+     "weight": 0.0189,
+     "estimated": true
+    },
+    {
+     "ticker": "CASH",
+     "weight": 0.21,
+     "estimated": false
+    }
+   ]
+  },
+  {
+   "id": "stefanuls",
+   "list": "stocks",
+   "rank": 20,
+   "name": "StefanULS (Stefan Uleia)",
+   "kind": "eToro Popular Investor (Elite)",
+   "style": "Mega-cap tech",
+   "since": "2021",
+   "url": "https://www.etoro.com/people/StefanULS/stats",
+   "five_y": 2.883,
+   "record": "2022 +38.1%, 2023 +48.7%, 2024 +50.2%, 2025 +29.8%, 2026 YTD −3.0%. Risk 4.",
+   "reported": {
+    "2022": 0.381,
+    "2023": 0.48700000000000004,
+    "2024": 0.502,
+    "2025": 0.298,
+    "2026 YTD": -0.03
+   },
+   "top_text": "GOOG 12.9%, META 12.3%, NVDA 10.9%, MSFT 10.7%, WMT 9.1%, AMD 7.1% (20 stocks)",
+   "caveat": "≈71% tech — returns largely a mega-cap beta bet.",
+   "verdict": "KEEP-WITH-CAVEAT",
+   "found_by": "ChatGPT",
+   "score": 75,
+   "proxy": null,
+   "benchmarks": [
+    "SPY",
+    "URTH"
+   ],
+   "notes": "",
+   "holdings": [
+    {
+     "ticker": "GOOG",
+     "weight": 0.129,
+     "estimated": false
+    },
+    {
+     "ticker": "META",
+     "weight": 0.123,
+     "estimated": false
+    },
+    {
+     "ticker": "NVDA",
+     "weight": 0.109,
+     "estimated": false
+    },
+    {
+     "ticker": "MSFT",
+     "weight": 0.107,
+     "estimated": false
+    },
+    {
+     "ticker": "WMT",
+     "weight": 0.091,
+     "estimated": false
+    },
+    {
+     "ticker": "AMD",
+     "weight": 0.071,
+     "estimated": false
+    }
+   ]
+  },
+  {
+   "id": "prpfx",
+   "list": "etf",
+   "rank": 1,
+   "name": "Permanent Portfolio Fund (PRPFX) – Harry Browne model",
+   "kind": "Live fund (reference model)",
+   "style": "All-weather: stocks/gold/bonds/cash",
+   "since": "1982",
+   "url": "https://totalrealreturns.com/n/PRPFX,AOR",
+   "five_y": null,
+   "record": "10y 12.2%/yr, 5y 10.8%/yr vs 60/40 (AOR) 7.9% / 5.4% (to 19-Nov-2026).",
+   "reported": {},
+   "top_text": "Gold, Swiss franc, US Treasuries, aggressive-growth & resource stocks",
+   "caveat": "Not a pure 4×25%; recent edge driven by gold rally.",
+   "verdict": "KEEP",
+   "found_by": "Claude (new)",
+   "score": 95,
+   "proxy": "PRPFX",
+   "benchmarks": [
+    "AOR",
+    "ACWI"
+   ],
+   "notes": "",
+   "holdings": [
+    {
+     "ticker": "PRPFX",
+     "weight": 1.0,
+     "estimated": false
+    }
+   ]
+  },
+  {
+   "id": "vsmgx",
+   "list": "etf",
+   "rank": 2,
+   "name": "Vanguard LifeStrategy Moderate (VSMGX) – 60/40 anchor",
+   "kind": "Live fund (benchmark)",
+   "style": "Passive 60/40 global",
+   "since": "1994",
+   "url": "https://totalrealreturns.com/n/VSMGX,AOR",
+   "five_y": null,
+   "record": "10y 7.9%/yr, 5y 5.1%/yr ≈ AOR.",
+   "reported": {},
+   "top_text": "Total US, Total Intl, Total Bond, Intl Bond index funds",
+   "caveat": "Benchmark, not an investor — use to judge everyone else.",
+   "verdict": "KEEP",
+   "found_by": "Claude (new)",
+   "score": 94,
+   "proxy": "VSMGX",
+   "benchmarks": [
+    "AOR",
+    "ACWI"
+   ],
+   "notes": "",
+   "holdings": [
+    {
+     "ticker": "VSMGX",
+     "weight": 1.0,
+     "estimated": false
+    }
+   ]
+  },
+  {
+   "id": "faber_trty",
+   "list": "etf",
+   "rank": 3,
+   "name": "Meb Faber – Cambria Trinity (TRTY)",
+   "kind": "Public figure (ETF proxy)",
+   "style": "Global allocation + trend",
+   "since": "2018",
+   "url": "https://totalrealreturns.com/n/TRTY,AOR",
+   "five_y": null,
+   "record": "5y 5.4%/yr (= AOR); +6.4%/yr since Dec-2019. Faber says all his public assets are in Cambria ETFs.",
+   "reported": {},
+   "top_text": "Cambria value/yield ETFs, Treasuries, trend-following sleeve (daily holdings published)",
+   "caveat": "Owns the issuer (conflict). Personal itemised holdings not published.",
+   "verdict": "KEEP-WITH-CAVEAT",
+   "found_by": "Gemini",
+   "score": 83,
+   "proxy": "TRTY",
+   "benchmarks": [
+    "AOR",
+    "ACWI"
+   ],
+   "notes": "",
+   "holdings": [
+    {
+     "ticker": "TRTY",
+     "weight": 1.0,
+     "estimated": false
+    }
+   ]
+  },
+  {
+   "id": "estebanopatril",
+   "list": "etf",
+   "rank": 4,
+   "name": "estebanopatril (Esteban Opatril)",
+   "kind": "eToro Popular Investor",
+   "style": "100% ETF, global passive",
+   "since": "2020",
+   "url": "https://www.etoro.com/people/estebanopatril/stats",
+   "five_y": 0.456,
+   "record": "2022 −14.2%, 2023 +12.5%, 2024 +8.6%, 2025 +27.8%, 2026 YTD +8.8%. Risk 3, 1y DD −9.0%.",
+   "reported": {
+    "2022": -0.142,
+    "2023": 0.125,
+    "2024": 0.086,
+    "2025": 0.278,
+    "2026 YTD": 0.08800000000000001
+   },
+   "top_text": "IUSQ (ACWI) 50.3%, IS3S (World Value) 29.5%, World mid/small-cap, EM, SWDA ~5% each",
+   "caveat": "Cleanest passive account found; 14 trades/yr, avg hold 22 months. Small (254 copiers).",
+   "verdict": "KEEP",
+   "found_by": "Claude (new)",
+   "score": 83,
+   "proxy": null,
+   "benchmarks": [
+    "AOR",
+    "ACWI"
+   ],
+   "notes": "",
+   "holdings": [
+    {
+     "ticker": "IUSQ.DE",
+     "weight": 0.503,
+     "estimated": false
+    },
+    {
+     "ticker": "IS3S.DE",
+     "weight": 0.295,
+     "estimated": false
+    },
+    {
+     "ticker": "IUSN.DE",
+     "weight": 0.0673,
+     "estimated": true
+    },
+    {
+     "ticker": "IS3N.DE",
+     "weight": 0.0673,
+     "estimated": true
+    },
+    {
+     "ticker": "SWDA.L",
+     "weight": 0.0673,
+     "estimated": true
+    }
+   ]
+  },
+  {
+   "id": "nestorarmstrong",
+   "list": "etf",
+   "rank": 5,
+   "name": "NestorArmstrong (Nestor Armstrong Rodriguez)",
+   "kind": "eToro Popular Investor",
+   "style": "100% ETF, tech tilt",
+   "since": "2014",
+   "url": "https://www.etoro.com/people/NestorArmstrong/stats",
+   "five_y": 0.454,
+   "record": "2022 −11.1%, 2023 +17.5%, 2024 +23.4%, 2025 +7.4%, 2026 YTD +5.0%. Risk 4, 1y DD −18.3%.",
+   "reported": {
+    "2022": -0.111,
+    "2023": 0.175,
+    "2024": 0.23399999999999999,
+    "2025": 0.07400000000000001,
+    "2026 YTD": 0.05
+   },
+   "top_text": "VGT 29.9%, VEA 26.0%, SMH 22.2%, EWC 21.9%",
+   "caveat": "~52% tech/semis tilt — not neutral. Small (186 copiers).",
+   "verdict": "KEEP-WITH-CAVEAT",
+   "found_by": "Claude (new)",
+   "score": 83,
+   "proxy": null,
+   "benchmarks": [
+    "AOR",
+    "ACWI"
+   ],
+   "notes": "",
+   "holdings": [
+    {
+     "ticker": "VGT",
+     "weight": 0.299,
+     "estimated": false
+    },
+    {
+     "ticker": "VEA",
+     "weight": 0.26,
+     "estimated": false
+    },
+    {
+     "ticker": "SMH",
+     "weight": 0.222,
+     "estimated": false
+    },
+    {
+     "ticker": "EWC",
+     "weight": 0.219,
+     "estimated": false
+    }
+   ]
+  },
+  {
+   "id": "merriman_ubh",
+   "list": "etf",
+   "rank": 6,
+   "name": "Paul Merriman – Ultimate Buy-and-Hold",
+   "kind": "Published model portfolio",
+   "style": "Factor-tilted global ETFs",
+   "since": "Model (backtest 1976)",
+   "url": "https://www.lazyportfolioetf.com/allocation/paul-merriman-ultimate-buy-and-hold-strategy/",
+   "five_y": null,
+   "record": "30y simulated 8.8%/yr, max DD −57% (Jun-2026). Live personal returns not published.",
+   "reported": {},
+   "top_text": "~10 equal sleeves: US/Intl large, small, value, REIT, EM + bonds",
+   "caveat": "Model/backtest, not real money — rebuild with ETFs to track live.",
+   "verdict": "KEEP-WITH-CAVEAT",
+   "found_by": "Claude (new)",
+   "score": 81,
+   "proxy": null,
+   "benchmarks": [
+    "AOR",
+    "ACWI"
+   ],
+   "notes": "Model allocation (not real money): 10 equity sleeves × 6% + 40% bonds (20% IEF, 12% SHY, 8% TIP).",
+   "holdings": [
+    {
+     "ticker": "VOO",
+     "weight": 0.06,
+     "estimated": false
+    },
+    {
+     "ticker": "VTV",
+     "weight": 0.06,
+     "estimated": false
+    },
+    {
+     "ticker": "VB",
+     "weight": 0.06,
+     "estimated": false
+    },
+    {
+     "ticker": "VBR",
+     "weight": 0.06,
+     "estimated": false
+    },
+    {
+     "ticker": "VNQ",
+     "weight": 0.06,
+     "estimated": false
+    },
+    {
+     "ticker": "VEA",
+     "weight": 0.06,
+     "estimated": false
+    },
+    {
+     "ticker": "EFV",
+     "weight": 0.06,
+     "estimated": false
+    },
+    {
+     "ticker": "SCZ",
+     "weight": 0.06,
+     "estimated": false
+    },
+    {
+     "ticker": "DLS",
+     "weight": 0.06,
+     "estimated": false
+    },
+    {
+     "ticker": "VWO",
+     "weight": 0.06,
+     "estimated": false
+    },
+    {
+     "ticker": "IEF",
+     "weight": 0.2,
+     "estimated": false
+    },
+    {
+     "ticker": "SHY",
+     "weight": 0.12,
+     "estimated": false
+    },
+    {
+     "ticker": "TIP",
+     "weight": 0.08,
+     "estimated": false
+    }
+   ]
+  },
+  {
+   "id": "simonapedersen",
+   "list": "etf",
+   "rank": 7,
+   "name": "SimonAPedersen (Simon Pedersen)",
+   "kind": "eToro Popular Investor",
+   "style": "Core ETF + mega-caps",
+   "since": "2019",
+   "url": "https://www.etoro.com/people/SimonAPedersen/stats",
+   "five_y": 0.964,
+   "record": "2022 −8.6%, 2023 +52.9%, 2024 +15.3%, 2025 +11.9%, 2026 YTD +8.9%. Risk 3.",
+   "reported": {
+    "2022": -0.086,
+    "2023": 0.529,
+    "2024": 0.153,
+    "2025": 0.11900000000000001,
+    "2026 YTD": 0.08900000000000001
+   },
+   "top_text": "MSFT 32.0%, VTI 23.4%, SCHD 22.0%, AAPL, AMZN, KO (48% ETF)",
+   "caveat": "32% in a single stock (MSFT) — hybrid, not pure ETF.",
+   "verdict": "KEEP-WITH-CAVEAT",
+   "found_by": "Claude (new)",
+   "score": 80,
+   "proxy": null,
+   "benchmarks": [
+    "AOR",
+    "ACWI"
+   ],
+   "notes": "",
+   "holdings": [
+    {
+     "ticker": "MSFT",
+     "weight": 0.32,
+     "estimated": false
+    },
+    {
+     "ticker": "VTI",
+     "weight": 0.234,
+     "estimated": false
+    },
+    {
+     "ticker": "SCHD",
+     "weight": 0.22,
+     "estimated": false
+    },
+    {
+     "ticker": "AAPL",
+     "weight": 0.0753,
+     "estimated": true
+    },
+    {
+     "ticker": "AMZN",
+     "weight": 0.0753,
+     "estimated": true
+    },
+    {
+     "ticker": "KO",
+     "weight": 0.0753,
+     "estimated": true
+    }
+   ]
+  },
+  {
+   "id": "rpar",
+   "list": "etf",
+   "rank": 8,
+   "name": "All Weather proxy – RPAR Risk Parity ETF",
+   "kind": "Live fund (reference model)",
+   "style": "Risk parity (Dalio-style)",
+   "since": "2019",
+   "url": "https://totalrealreturns.com/n/RPAR,AOR",
+   "five_y": null,
+   "record": "+2.8%/yr since inception; 5y −1.2%/yr vs AOR +5.4%.",
+   "reported": {},
+   "top_text": "Treasuries, TIPS, global equities, commodities/gold (leveraged risk-parity)",
+   "caveat": "Third-party proxy, not Bridgewater's real All Weather. Weak record.",
+   "verdict": "KEEP-WITH-CAVEAT",
+   "found_by": "Claude (new)",
+   "score": 77,
+   "proxy": "RPAR",
+   "benchmarks": [
+    "AOR",
+    "ACWI"
+   ],
+   "notes": "",
+   "holdings": [
+    {
+     "ticker": "RPAR",
+     "weight": 1.0,
+     "estimated": false
+    }
+   ]
+  },
+  {
+   "id": "ferdinandcolella",
+   "list": "etf",
+   "rank": 9,
+   "name": "FerdinandColella (Ferdinando Colella)",
+   "kind": "eToro Popular Investor",
+   "style": "Factor ETFs + bonds + gold",
+   "since": "2021",
+   "url": "https://www.etoro.com/people/FerdinandColella/stats",
+   "five_y": 0.481,
+   "record": "2022 −9.5%, 2023 +16.0%, 2024 +29.9%, 2025 +19.0%, 2026 YTD −8.7%. Risk 4.",
+   "reported": {
+    "2022": -0.095,
+    "2023": 0.16,
+    "2024": 0.299,
+    "2025": 0.19,
+    "2026 YTD": -0.087
+   },
+   "top_text": "MSCI World factor ETFs, global infrastructure, global agg bonds, gold ETC, BTC 8.6%",
+   "caveat": "~15% crypto; exactly ~5 years.",
+   "verdict": "KEEP-WITH-CAVEAT",
+   "found_by": "Claude (new)",
+   "score": 74,
+   "proxy": null,
+   "benchmarks": [
+    "AOR",
+    "ACWI"
+   ],
+   "notes": "Holdings described by category only: quality & momentum factor ETFs (IS3Q, IS3R), infrastructure (IGF), global bonds (BNDW), gold (GLD) — equal estimated weights; BTC 8.6%.",
+   "holdings": [
+    {
+     "ticker": "IS3Q.DE",
+     "weight": 0.1828,
+     "estimated": true
+    },
+    {
+     "ticker": "IS3R.DE",
+     "weight": 0.1828,
+     "estimated": true
+    },
+    {
+     "ticker": "IGF",
+     "weight": 0.1828,
+     "estimated": true
+    },
+    {
+     "ticker": "BNDW",
+     "weight": 0.1828,
+     "estimated": true
+    },
+    {
+     "ticker": "GLD",
+     "weight": 0.1828,
+     "estimated": true
+    },
+    {
+     "ticker": "BTC-USD",
+     "weight": 0.086,
+     "estimated": false
+    }
+   ]
+  },
+  {
+   "id": "jlcollins",
+   "list": "etf",
+   "rank": 10,
+   "name": "JL Collins ('The Simple Path to Wealth')",
+   "kind": "Public figure (allocation only)",
+   "style": "Total-market index",
+   "since": "2011 (blog)",
+   "url": "https://jlcollinsnh.com/2026/02/08/jl-goes-international-and-to-etfs-oh-my/",
+   "five_y": null,
+   "record": "No personal return series. Feb-2026: ≈85% VTI / 15% VT + BND — replicate to track.",
+   "reported": {},
+   "top_text": "VTI, VT, BND",
+   "caveat": "Allocation disclosure only; returns must be reconstructed.",
+   "verdict": "KEEP-WITH-CAVEAT",
+   "found_by": "Claude (new)",
+   "score": 72,
+   "proxy": null,
+   "benchmarks": [
+    "AOR",
+    "ACWI"
+   ],
+   "notes": "Stock part only (≈85% VTI / 15% VT); the BND share is not published.",
+   "holdings": [
+    {
+     "ticker": "VTI",
+     "weight": 0.85,
+     "estimated": false
+    },
+    {
+     "ticker": "VT",
+     "weight": 0.15,
+     "estimated": false
+    }
+   ]
+  }
+ ]
+}
