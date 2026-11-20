@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agents Lab</title>
+<style>
+:root{
+  --bg:#f6f7f9;--panel:#fff;--ink:#1b1f24;--muted:#5f6b7a;--line:#e3e6ea;
+  --accent:#2f6fde;--good:#1f8a4c;--bad:#c2410c;--warn:#b7791f;--chip:#eef2f7;
+  --gemini:#2f6fde;--chatgpt:#10a37f;--claude:#c96442;--consensus:#6b5bd2;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#111418;--panel:#1a1f25;--ink:#e6e9ed;--muted:#97a3b2;--line:#2b323b;
+  --accent:#6ea0ff;--good:#4ccb83;--bad:#ff8a5c;--warn:#e7b65a;--chip:#232a33;
+  --gemini:#6ea0ff;--chatgpt:#3fcf9f;--claude:#e58a66;--consensus:#a495ff;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,"Segoe UI",Tahoma,sans-serif}
+header{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 20px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+header h1{font-size:18px;margin:0}
+header .sp{flex:1}
+#ver{font-size:12px}
+nav{display:flex;gap:4px;flex-wrap:wrap;padding:10px 20px;background:var(--panel);border-bottom:1px solid var(--line)}
+nav button{border:0;background:none;color:var(--muted);padding:7px 12px;border-radius:8px;cursor:pointer;font:inherit}
+nav button.on{background:var(--chip);color:var(--ink);font-weight:600}
+main{padding:20px;max-width:1300px;margin:auto}
+section{display:none}section.on{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.card h3{margin:0 0 8px;font-size:15px}
+.kpi .v{font-size:24px;font-weight:700}.kpi .l{color:var(--muted);font-size:13px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:start;vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:13px}
+.ltr{direction:ltr;unicode-bidi:isolate}
+/* LTR values (numbers, tickers, dates) inside an RTL table must still follow the column's side */
+html[dir=rtl] td.ltr,html[dir=rtl] .kpi .v.ltr{text-align:right}
+.tablewrap{overflow-x:auto}
+.chip{display:inline-block;padding:1px 8px;border-radius:99px;background:var(--chip);font-size:12px}
+.good{color:var(--good)}.bad{color:var(--bad)}.warn{color:var(--warn)}.muted{color:var(--muted)}
+.agent{font-weight:600}.a-gemini{color:var(--gemini)}.a-chatgpt{color:var(--chatgpt)}.a-claude{color:var(--claude)}.a-consensus{color:var(--consensus)}
+button.btn{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:8px 14px;cursor:pointer;font:inherit}
+button.btn.sec{background:var(--chip);color:var(--ink)}
+button.btn:disabled{opacity:.5;cursor:default}
+select,textarea,input{font:inherit;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+textarea{width:100%;min-height:200px;direction:ltr;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+pre{white-space:pre-wrap;direction:ltr;text-align:left;background:var(--chip);padding:12px;border-radius:8px;font-size:12.5px;max-height:520px;overflow:auto;margin:0}
+.bar{height:8px;background:var(--chip);border-radius:4px;overflow:hidden;min-width:80px}
+.bar>i{display:block;height:100%;background:var(--accent)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.agents{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:14px}
+details summary{cursor:pointer;color:var(--muted)}
+.md h1{font-size:20px}.md h2{font-size:16px;margin-top:22px}
+.md blockquote{margin:8px 0;padding:6px 12px;border-inline-start:3px solid var(--warn);color:var(--muted)}
+svg.spark{display:block}
+@media (max-width:600px){main{padding:12px}.agents{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="title">Agents Lab</h1>
+  <span id="ver" class="chip ltr"></span>
+  <span id="runstate" class="muted"></span>
+  <span id="updstate"></span>
+  <span class="sp"></span>
+  <button class="btn" id="runbtn"></button>
+  <button class="btn sec" id="refresh"></button>
+  <button class="btn sec" id="updbtn"></button>
+  <button class="btn sec" id="langbtn" title="Language / اللغة"></button>
+</header>
+<nav id="nav"></nav>
+<main>
+  <section id="overview"></section>
+  <section id="sessions"></section>
+  <section id="forecasts"></section>
+  <section id="prices"></section>
+  <section id="inbox"></section>
+  <section id="prompts"></section>
+  <section id="report"></section>
+  <section id="log"></section>
+</main>
+<script>
+/* ---------- translations: every visible UI string lives here ---------- */
+const I18N={
+ar:{
+  title:"Agents Lab · مختبر الوكلاء",run:"تشغيل الآن",refresh:"تحديث",switch_to:"English",
+  tab_overview:"نظرة عامة",tab_sessions:"الجلسات والردود",tab_forecasts:"التوقعات والحسم",
+  tab_prices:"الصناديق والأسعار",tab_inbox:"صندوق الردود",tab_prompts:"النصوص المجدولة",tab_report:"التقرير",tab_log:"السجل",
+  method_manual:"تطبيق + inbox",method_api:"API",not_yet:"لم يصل بعد — الصقه في «صندوق الردود»",
+  kpi_sessions:"جلسات شهرية",kpi_responses:"ردود الوكلاء",kpi_resolved:"توقعات محسومة",of:"من",
+  kpi_next:"موعد الحسم القادم",kpi_lastprice:"آخر سعر محفوظ",kpi_inbox:"ملفات تنتظر في inbox",
+  inbox_failed:n=>`${n} فشل استيرادها`,
+  overdue:n=>`${n} توقعات حلّ موعدها ولم تُحسم بعد (تنقص الأسعار؟) — اضغط «تشغيل الآن».`,
+  this_month:m=>`هذا الشهر (${m})`,th_agent:"الوكيل",th_method:"الطريقة",th_status:"الحالة",
+  scoreboard:"لوحة النتائج — Brier (الأقل أفضل؛ قول 50% دائماً = 0.250)",
+  th_core_brier:"Brier الأسئلة الإلزامية",th_n:"عدد",th_all_brier:"Brier الكل",th_pending:"معلّقة",
+  no_resolved:"لا توجد توقعات محسومة بعد.",
+  caveat:"لا استنتاج قبل ~30 سؤالاً إلزامياً محسوماً لكل وكيل؛ فروق أقل من 0.02 ضجيج.",
+  no_sessions:"لا توجد جلسات بعد.",month_label:"الشهر:",question:"السؤال",allocation:"التوزيع",
+  forecasts_n:n=>`التوقعات (${n})`,th_horizon:"أفق",th_outcome:"النتيجة",days_short:"ي",
+  happened:"✓ حدث",not_happened:"✗ لم يحدث",raw:"الرد الخام",
+  all_agents:"كل الوكلاء",all_states:"كل الحالات",opt_pending:"معلّقة",opt_resolved:"محسومة",core_only:"الإلزامية فقط",
+  n_forecasts:n=>`${n} توقع`,th_month:"الشهر",th_from:"من",th_to:"إلى",th_progress:"الأداء حتى الآن",
+  vs:"مقابل",core_chip:"إلزامي",pending_cell:"معلّق",
+  funds_title:"قائمة الصناديق المسموحة · المؤشر المرجعي:",th_fund:"الصندوق",th_last:"آخر سعر",th_date:"التاريخ",
+  th_1m:"شهر",th_3m:"3 أشهر",th_1y:"سنة",th_6m:"آخر 6 أشهر",bench_chip:"مرجعي",no_data:"لا بيانات",
+  prices_note:"أسعار معدّلة تشمل التوزيعات (Yahoo). CASH = عائد 0%.",
+  core_title:"الأسئلة الإلزامية الشهرية",days:"يوماً",
+  horizons_note:(h,n)=>`آفاق مسموحة: <span class="ltr">${h}</span> يوماً · حد أدنى ${n} توقعات لكل وكيل`,
+  paste_title:"لصق رد جديد",
+  paste_help:a=>`انسخ رد الوكيل كاملاً (${a}) والصقه هنا. يُحفظ في inbox ويُستورد فوراً.`,
+  save_import:"حفظ واستيراد",paste_ph:"الصق الرد كاملاً هنا...",waiting:"في الانتظار",import_failed:"فشل الاستيراد",
+  failed_help:"صحّح الملف وأعده إلى مجلد inbox، أو الصق الرد من جديد أعلاه.",processed:"تم استيراده (آخر 50)",empty:"فارغ",
+  prompts_help1:"كل شهر يوم 20: انسخ نص كل وكيل والصقه في تطبيقه (أو في مهمته المجدولة). لا تعدّل النص أثناء التجربة.",
+  prompts_help2:"Claude و Codex يحفظان الرد تلقائياً في inbox إن كان لديهما وصول لهذا المجلد. Gemini (وأي وكيل آخر لا يستطيع الكتابة على جهازك): انسخ رده والصقه في «صندوق الردود» — اختر اسم الوكيل الصحيح.",
+  copy:"نسخ",copied:"تم النسخ",selected:"محدد — اضغط Ctrl+C",
+  log_title:"logs/run.log (آخر 300 سطر)",no_log:"لا يوجد سجل بعد.",
+  running_since:t=>`جارٍ التشغيل منذ ${t}…`,last_run:t=>`آخر تشغيل يدوي: ${t}`,see_log:"✗ (راجع السجل)",
+  version:v=>`الإصدار ${v}`,
+  check_updates:"التحقق من التحديثات",checking:"جارٍ التحقق…",up_to_date:v=>`لديك أحدث إصدار (${v})`,
+  update_avail:(c,l)=>`يتوفر الإصدار ${l} (المثبت ${c})`,install_update:l=>`تثبيت ${l}`,
+  confirm_update:l=>`تثبيت الإصدار ${l}؟
+ستتوقف اللوحة لحظات، وتؤخذ نسخة احتياطية من بياناتك قبل أي تغيير.`,
+  updating:"جارٍ التحديث… ستعود اللوحة خلال دقيقة تقريباً",updated:v=>`تم التحديث إلى ${v} ✓`,
+  update_failed:"فشل التحديث — أُعيد الإصدار السابق كما كان.",update_log:"سجل التحديث"
+},
+en:{
+  title:"Agents Lab",run:"Run now",refresh:"Refresh",switch_to:"العربية",
+  tab_overview:"Overview",tab_sessions:"Sessions & replies",tab_forecasts:"Forecasts & resolution",
+  tab_prices:"Funds & prices",tab_inbox:"Inbox",tab_prompts:"Prompts",tab_report:"Report",tab_log:"Log",
+  method_manual:"App + inbox",method_api:"API",not_yet:"Not received yet — paste it in the Inbox tab",
+  kpi_sessions:"Monthly sessions",kpi_responses:"Agent replies",kpi_resolved:"Resolved forecasts",of:"of",
+  kpi_next:"Next resolution date",kpi_lastprice:"Latest stored price",kpi_inbox:"Files waiting in inbox",
+  inbox_failed:n=>`${n} failed to import`,
+  overdue:n=>`${n} forecasts are past their resolution date but not resolved yet (missing prices?) — click "Run now".`,
+  this_month:m=>`This month (${m})`,th_agent:"Agent",th_method:"Method",th_status:"Status",
+  scoreboard:"Scoreboard — Brier (lower is better; always saying 50% = 0.250)",
+  th_core_brier:"Core-question Brier",th_n:"n",th_all_brier:"All Brier",th_pending:"Pending",
+  no_resolved:"No resolved forecasts yet.",
+  caveat:"Draw no conclusions before ~30 resolved core questions per agent; differences under 0.02 are noise.",
+  no_sessions:"No sessions yet.",month_label:"Month:",question:"Question",allocation:"Allocation",
+  forecasts_n:n=>`Forecasts (${n})`,th_horizon:"Horizon",th_outcome:"Outcome",days_short:"d",
+  happened:"✓ happened",not_happened:"✗ did not happen",raw:"Raw reply",
+  all_agents:"All agents",all_states:"All states",opt_pending:"Pending",opt_resolved:"Resolved",core_only:"Core only",
+  n_forecasts:n=>`${n} forecasts`,th_month:"Month",th_from:"From",th_to:"To",th_progress:"Performance so far",
+  vs:"vs",core_chip:"core",pending_cell:"pending",
+  funds_title:"Allowed funds · Benchmark:",th_fund:"Fund",th_last:"Last price",th_date:"Date",
+  th_1m:"1M",th_3m:"3M",th_1y:"1Y",th_6m:"Last 6 months",bench_chip:"benchmark",no_data:"no data",
+  prices_note:"Adjusted prices including distributions (Yahoo). CASH = 0% return.",
+  core_title:"Monthly core questions",days:"days",
+  horizons_note:(h,n)=>`Allowed horizons: <span class="ltr">${h}</span> days · minimum ${n} forecasts per agent`,
+  paste_title:"Paste a new reply",
+  paste_help:a=>`Copy the agent's full reply (${a}) and paste it here. It is saved to inbox and imported immediately.`,
+  save_import:"Save & import",paste_ph:"Paste the full reply here...",waiting:"Waiting",import_failed:"Import failed",
+  failed_help:"Fix the file and move it back into the inbox folder, or paste the reply again above.",processed:"Imported (last 50)",empty:"Empty",
+  prompts_help1:"Every month on the 20th: copy each agent's prompt into its app (or its scheduled task). Do not edit the prompt during the experiment.",
+  prompts_help2:"Claude and Codex save their reply to inbox automatically if they can access this folder. Gemini (and any agent that cannot write to your computer): copy its reply and paste it in the Inbox tab — pick the right agent name.",
+  copy:"Copy",copied:"Copied",selected:"Selected — press Ctrl+C",
+  log_title:"logs/run.log (last 300 lines)",no_log:"No log yet.",
+  running_since:t=>`Running since ${t}…`,last_run:t=>`Last manual run: ${t}`,see_log:"✗ (see the log)",
+  version:v=>`version ${v}`,
+  check_updates:"Check for updates",checking:"Checking…",up_to_date:v=>`You have the latest version (${v})`,
+  update_avail:(c,l)=>`Version ${l} is available (installed: ${c})`,install_update:l=>`Install ${l}`,
+  confirm_update:l=>`Install version ${l}?
+The dashboard stops for a moment, and your data is backed up before anything changes.`,
+  updating:"Updating… the dashboard will be back in about a minute",updated:v=>`Updated to ${v} ✓`,
+  update_failed:"Update failed — the previous version was restored as it was.",update_log:"Update log"
+}};
+let LANG="ar";
+try{const l=localStorage.getItem("lang");if(l in I18N)LANG=l}catch(e){}
+const T=(k,...a)=>{const s=I18N[LANG][k]??I18N.ar[k]??k;return typeof s==="function"?s(...a):s};
+
+const TABS=["overview","sessions","forecasts","prices","inbox","prompts","report","log"];
+const NAMES={gemini:"Gemini",chatgpt:"ChatGPT",claude:"Claude"};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pct=(x,d=1)=>x==null?"—":(x>=0?"+":"")+(x*100).toFixed(d)+"%";
+const ag=a=>`<span class="agent a-${esc(a)}">${esc(a)}</span>`;
+const api=p=>fetch(p).then(r=>r.json());
+const post=(p,b)=>fetch(p,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(b||{})}).then(r=>r.json());
+let CFG=null,current="overview",lastRun=null;
+try{current=localStorage.getItem("tab")||"overview"}catch(e){}
+const manualAgents=()=>Object.keys(CFG.agents).filter(a=>CFG.agents[a].provider==="manual");
+
+function q(f){
+  return f.kind==="outperform"?`${f.ticker_a} > ${f.ticker_b}`:`${f.ticker_a} ${f.threshold>=0?">":"<"} ${pct(f.threshold,0)}`;
+}
+function horizon(f){return Math.round((new Date(f.resolve_date)-new Date(f.start_date))/864e5)}
+function brierCls(b){return b==null?"muted":b<0.22?"good":b>0.25?"bad":"warn"}
+
+function applyLang(){
+  document.documentElement.lang=LANG;
+  document.documentElement.dir=LANG==="ar"?"rtl":"ltr";
+  $("#title").textContent=T("title");
+  $("#runbtn").textContent=T("run");
+  $("#refresh").textContent=T("refresh");
+  $("#langbtn").textContent=T("switch_to");
+  $("#updbtn").textContent=T("check_updates");
+  $("#ver").textContent=CFG&&CFG.version?T("version",CFG.version):"";
+  if(lastRun)runstate(lastRun);
+}
+$("#langbtn").onclick=()=>{LANG=LANG==="ar"?"en":"ar";try{localStorage.setItem("lang",LANG)}catch(e){}
+  applyLang();if(CFG)show(current);};
+
+function nav(){
+  $("#nav").innerHTML=TABS.map(id=>`<button data-t="${id}" class="${id===current?"on":""}">${T("tab_"+id)}</button>`).join("");
+  document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>show(b.dataset.t));
+}
+function show(id){current=id;try{localStorage.setItem("tab",id)}catch(e){}
+  nav();document.querySelectorAll("section").forEach(s=>s.classList.toggle("on",s.id===id));LOAD[id]();}
+
+const LOAD={
+async overview(){
+  const o=await api("/api/overview");
+  const f=o.forecasts;
+  const status=o.agents.map(a=>`<tr><td>${ag(a)}</td><td>${CFG.agents[a].provider==="manual"?T("method_manual"):T("method_api")}</td>
+     <td>${o.this_month[a]?`<span class="good">✓ ${esc(o.this_month[a].slice(0,10))}</span>`:`<span class="warn">${T("not_yet")}</span>`}</td></tr>`).join("");
+  const sb=Object.entries(o.scoreboard).sort().map(([a,v])=>`<tr><td>${ag(a)}</td>
+     <td class="ltr ${brierCls(v.core_brier)}">${v.core_brier==null?"—":v.core_brier.toFixed(3)}</td><td>${v.core_n}</td>
+     <td class="ltr ${brierCls(v.all_brier)}">${v.all_brier==null?"—":v.all_brier.toFixed(3)}</td><td>${v.all_n}</td><td>${v.pending}</td></tr>`).join("");
+  $("#overview").innerHTML=`
+  <div class="grid">
+   <div class="card kpi"><div class="v">${o.sessions}</div><div class="l">${T("kpi_sessions")}</div></div>
+   <div class="card kpi"><div class="v">${o.responses}</div><div class="l">${T("kpi_responses")}</div></div>
+   <div class="card kpi"><div class="v">${f.resolved||0} <small class="muted">${T("of")} ${f.n||0}</small></div><div class="l">${T("kpi_resolved")}</div></div>
+   <div class="card kpi"><div class="v ltr">${esc(f.next_due||"—")}</div><div class="l">${T("kpi_next")}</div></div>
+   <div class="card kpi"><div class="v ltr">${esc(o.last_price||"—")}</div><div class="l">${T("kpi_lastprice")}</div></div>
+   <div class="card kpi"><div class="v">${o.inbox_pending}</div><div class="l">${T("kpi_inbox")}${o.inbox_failed?` · <span class="bad">${T("inbox_failed",o.inbox_failed)}</span>`:""}</div></div>
+  </div>
+  ${f.overdue?`<div class="card warn">${T("overdue",f.overdue)}</div>`:""}
+  <div class="card"><h3>${T("this_month",esc(o.month))}</h3><div class="tablewrap"><table><tr><th>${T("th_agent")}</th><th>${T("th_method")}</th><th>${T("th_status")}</th></tr>${status}</table></div></div>
+  <div class="card"><h3>${T("scoreboard")}</h3>
+   <div class="tablewrap"><table><tr><th>${T("th_agent")}</th><th>${T("th_core_brier")}</th><th>${T("th_n")}</th><th>${T("th_all_brier")}</th><th>${T("th_n")}</th><th>${T("th_pending")}</th></tr>${sb||`<tr><td colspan=6 class="muted">${T("no_resolved")}</td></tr>`}</table></div>
+   <p class="muted">${T("caveat")}</p></div>`;
+  runstate(o.run);
+},
+async sessions(){
+  const ss=await api("/api/sessions");
+  if(!ss.length){$("#sessions").innerHTML=`<div class="card muted">${T("no_sessions")}</div>`;return}
+  const sel=`<div class="row"><label>${T("month_label")}</label><select id="msel">${ss.map((s,i)=>`<option value="${i}">${esc(s.created_at.slice(0,7))}</option>`).join("")}</select></div>`;
+  $("#sessions").innerHTML=sel+`<div id="sbody"></div>`;
+  const draw=i=>{const s=ss[i];
+    $("#sbody").innerHTML=`<div class="card"><h3>${T("question")}</h3><p class="ltr" style="text-align:left">${esc(s.question)}</p></div>
+    <div class="agents">${s.responses.map(r=>`<div class="card">
+      <h3>${ag(r.agent)} <span class="chip ltr">${esc(r.model)}</span> <span class="muted ltr">${esc(r.created_at.slice(0,16).replace("T"," "))}</span></h3>
+      ${r.analysis?`<p class="ltr" style="text-align:left">${esc(r.analysis)}</p>`:""}
+      ${r.risks?`<p class="ltr muted" style="text-align:left"><b>Wrong if:</b> ${esc(r.risks)}</p>`:""}
+      <h3>${T("allocation")}</h3><table>${r.allocation.map(a=>`<tr><td class="ltr">${esc(a.ticker)}</td><td style="width:60%"><div class="bar"><i style="width:${a.weight*100}%"></i></div></td><td class="ltr">${(a.weight*100).toFixed(0)}%</td></tr>`).join("")}</table>
+      <h3 style="margin-top:12px">${T("forecasts_n",r.forecasts.length)}</h3><div class="tablewrap"><table>
+      <tr><th>${T("question")}</th><th>${T("th_horizon")}</th><th>p</th><th>${T("th_outcome")}</th></tr>
+      ${r.forecasts.map(f=>`<tr><td class="ltr">${esc(q(f))}</td><td>${horizon(f)}${T("days_short")}</td><td class="ltr">${f.probability.toFixed(2)}</td>
+       <td>${f.outcome==null?`<span class="muted ltr">${esc(f.resolve_date)}</span>`:`${f.outcome?T("happened"):T("not_happened")} <span class="ltr ${brierCls(f.brier)}">${f.brier.toFixed(3)}</span>`}</td></tr>`).join("")}
+      </table></div>
+      ${r.raw_text?`<details><summary>${T("raw")}</summary><pre>${esc(r.raw_text)}</pre></details>`:""}
+    </div>`).join("")}</div>`;};
+  $("#msel").onchange=e=>draw(+e.target.value);draw(0);
+},
+async forecasts(){
+  const fs=await api("/api/forecasts");
+  const agents=[...new Set(fs.map(f=>f.agent))].sort();
+  $("#forecasts").innerHTML=`<div class="row">
+    <select id="fa"><option value="">${T("all_agents")}</option>${agents.map(a=>`<option>${esc(a)}</option>`).join("")}</select>
+    <select id="fs"><option value="">${T("all_states")}</option><option value="p">${T("opt_pending")}</option><option value="r">${T("opt_resolved")}</option></select>
+    <label><input type="checkbox" id="fc"> ${T("core_only")}</label><span class="muted" id="fn"></span></div>
+    <div class="card tablewrap"><table id="ft"></table></div>`;
+  const draw=()=>{const a=$("#fa").value,s=$("#fs").value,c=$("#fc").checked;
+    const rows=fs.filter(f=>(!a||f.agent===a)&&(!s||(s==="p")===(f.outcome==null))&&(!c||f.core));
+    $("#fn").textContent=T("n_forecasts",rows.length);
+    $("#ft").innerHTML=`<tr><th>${T("th_month")}</th><th>${T("th_agent")}</th><th>${T("question")}</th><th>${T("th_from")}</th><th>${T("th_to")}</th><th>p</th><th>${T("th_progress")}</th><th>${T("th_outcome")}</th><th>Brier</th></tr>`+
+     rows.map(f=>{const prog=f.ret_a==null?"—":f.kind==="outperform"?`${pct(f.ret_a)} ${T("vs")} ${pct(f.ret_b)}`:pct(f.ret_a);
+      return `<tr><td class="ltr">${esc(f.month)}</td><td>${ag(f.agent)}</td><td class="ltr">${esc(q(f))}${f.core?` <span class="chip">${T("core_chip")}</span>`:""}</td>
+      <td class="ltr">${esc(f.start_date)}</td><td class="ltr">${esc(f.resolve_date)}</td><td class="ltr">${f.probability.toFixed(2)}</td>
+      <td class="ltr">${prog}</td><td>${f.outcome==null?`<span class="muted">${T("pending_cell")}</span>`:f.outcome?"✓":"✗"}</td>
+      <td class="ltr ${brierCls(f.brier)}">${f.brier==null?"—":f.brier.toFixed(3)}</td></tr>`}).join("");};
+  ["#fa","#fs","#fc"].forEach(s=>$(s).onchange=draw);draw();
+},
+async prices(){
+  const ps=await api("/api/prices");
+  const ret=(pts,days)=>{if(pts.length<2)return null;const last=pts[pts.length-1];const t=new Date(last[0])-days*864e5;
+    const base=pts.find(p=>new Date(p[0])>=t);return base?last[1]/base[1]-1:null};
+  const spark=pts=>{if(pts.length<2)return"";const v=pts.slice(-180).map(p=>p[1]),mn=Math.min(...v),mx=Math.max(...v),w=160,h=34;
+    const d=v.map((y,i)=>`${(i/(v.length-1)*w).toFixed(1)},${(h-(y-mn)/((mx-mn)||1)*h).toFixed(1)}`).join(" ");
+    return `<svg class="spark" width="${w}" height="${h}"><polyline fill="none" stroke="var(--accent)" stroke-width="1.5" points="${d}"/></svg>`};
+  const core=CFG.core_forecasts.map(c=>`<li><span class="ltr">${esc(q(c))}</span> — ${c.horizon_days} ${T("days")}</li>`).join("");
+  $("#prices").innerHTML=`<div class="card"><h3>${T("funds_title")} <span class="ltr">${esc(CFG.benchmark)}</span></h3>
+   <div class="tablewrap"><table><tr><th>${T("th_fund")}</th><th>${T("th_last")}</th><th>${T("th_date")}</th><th>${T("th_1m")}</th><th>${T("th_3m")}</th><th>${T("th_1y")}</th><th>${T("th_6m")}</th></tr>
+   ${CFG.universe.map(t=>{const p=ps[t]||[];const l=p[p.length-1];
+     return `<tr><td class="ltr"><b>${esc(t)}</b>${t===CFG.benchmark?` <span class="chip">${T("bench_chip")}</span>`:""}</td>
+     <td class="ltr">${t==="CASH"?"—":l?l[1].toFixed(2):T("no_data")}</td><td class="ltr">${l?esc(l[0]):"—"}</td>
+     ${[30,91,365].map(d=>{const r=ret(p,d);return `<td class="ltr ${r==null?"muted":r>=0?"good":"bad"}">${pct(r)}</td>`}).join("")}
+     <td>${spark(p)}</td></tr>`}).join("")}</table></div>
+   <p class="muted">${T("prices_note")}</p></div>
+   <div class="card"><h3>${T("core_title")}</h3><ul>${core}</ul>
+   <p class="muted">${T("horizons_note",CFG.horizons_days.join(", "),CFG.min_forecasts_per_agent)}</p></div>`;
+},
+async inbox(){
+  const b=await api("/api/inbox");
+  const ma=manualAgents();
+  const list=(arr,err)=>arr.length?`<table>${arr.map(f=>`<tr><td class="ltr">${esc(f.name)}</td><td class="ltr muted">${esc(f.modified)}</td>${err?`<td class="bad ltr">${esc(f.error||"")}</td>`:""}</tr>`).join("")}</table>`:`<p class="muted">${T("empty")}</p>`;
+  $("#inbox").innerHTML=`<div class="card"><h3>${T("paste_title")}</h3>
+   <p class="muted">${T("paste_help",ma.map(a=>label(a)).join(" / "))}</p>
+   <div class="row"><select id="pa">${ma.map(a=>`<option value="${esc(a)}">${esc(label(a))}</option>`).join("")}</select>
+   <button class="btn" id="psave">${T("save_import")}</button><span id="pmsg"></span></div>
+   <textarea id="ptext" placeholder="${esc(T("paste_ph"))}"></textarea></div>
+   <div class="card"><h3>${T("waiting")}</h3>${list(b.pending)}</div>
+   <div class="card"><h3>${T("import_failed")}</h3>${list(b.failed,true)}<p class="muted">${T("failed_help")}</p></div>
+   <div class="card"><h3>${T("processed")}</h3>${list(b.processed)}</div>
+   <p class="muted ltr" style="text-align:left">${esc(CFG.inbox)}</p>`;
+  $("#psave").onclick=async()=>{$("#psave").disabled=true;
+    const r=await post("/api/paste",{agent:$("#pa").value,text:$("#ptext").value});
+    $("#pmsg").innerHTML=r.error?`<span class="bad">${esc(r.error)}</span>`:`<span class="good">${esc((r.log||[]).join(" · "))}</span>`;
+    $("#psave").disabled=false;if(!r.error){$("#ptext").value="";setTimeout(()=>LOAD.inbox(),1500)}};
+},
+async prompts(){
+  const p=await api("/api/prompts");
+  $("#prompts").innerHTML=`<div class="card"><p>${T("prompts_help1")}</p><p class="muted">${T("prompts_help2")}</p></div>`+
+   Object.keys(p).map(a=>`<div class="card"><div class="row"><h3 style="margin:0">${ag(a)}</h3><button class="btn sec" data-c="${esc(a)}">${T("copy")}</button><span class="muted" id="c-${esc(a)}"></span></div><pre id="p-${esc(a)}">${esc(p[a])}</pre></div>`).join("");
+  document.querySelectorAll("[data-c]").forEach(b=>b.onclick=async()=>{const a=b.dataset.c;
+    try{await navigator.clipboard.writeText(p[a]);$("#c-"+a).textContent=T("copied")}catch(e){
+      const r=document.createRange();r.selectNodeContents($("#p-"+a));getSelection().removeAllRanges();getSelection().addRange(r);$("#c-"+a).textContent=T("selected")}});
+},
+async report(){
+  const r=await api("/api/report");
+  $("#report").innerHTML=`<div class="card md ltr" style="text-align:left">${md(r.markdown)}</div>`;
+},
+async log(){
+  const l=await api("/api/log");
+  $("#log").innerHTML=`<div class="card"><h3>${T("log_title")}</h3><pre id="logpre">${esc(l.text||T("no_log"))}</pre></div>`;
+  const p=$("#logpre");p.scrollTop=p.scrollHeight;
+}};
+function label(a){return NAMES[a]||a}
+
+function md(src){
+  const inl=s=>esc(s).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/`(.+?)`/g,"<code>$1</code>");
+  const out=[];const L=src.split("\n");
+  for(let i=0;i<L.length;i++){const l=L[i];
+    if(l.startsWith("|")){const rows=[];while(i<L.length&&L[i].startsWith("|")){rows.push(L[i]);i++}i--;
+      const cells=r=>r.split("|").slice(1,-1).map(c=>c.trim());
+      out.push(`<div class="tablewrap"><table><tr>${cells(rows[0]).map(c=>`<th>${inl(c)}</th>`).join("")}</tr>${rows.slice(2).map(r=>`<tr>${cells(r).map(c=>`<td>${inl(c)}</td>`).join("")}</tr>`).join("")}</table></div>`);}
+    else if(l.startsWith("## "))out.push(`<h2>${inl(l.slice(3))}</h2>`);
+    else if(l.startsWith("# "))out.push(`<h1>${inl(l.slice(2))}</h1>`);
+    else if(l.startsWith("> "))out.push(`<blockquote>${inl(l.slice(2))}</blockquote>`);
+    else if(l.startsWith("- "))out.push(`<div>• ${inl(l.slice(2))}</div>`);
+    else if(l.trim())out.push(`<p>${inl(l)}</p>`);}
+  return out.join("");
+}
+
+function runstate(r){
+  lastRun=r;
+  $("#runbtn").disabled=r.running;
+  $("#runstate").innerHTML=r.running?`<span class="warn">${T("running_since",esc((s=>s.length>8?s.slice(11,19):s)(r.started||"")))}</span>`:
+    r.finished?`${T("last_run",esc(r.finished.replace("T"," ")))} ${r.code===0?`<span class="good">✓</span>`:`<span class="bad">${T("see_log")}</span>`}`:"";
+}
+$("#runbtn").onclick=async()=>{await post("/api/run");runstate({running:true,started:new Date().toTimeString().slice(0,8)});poll()};
+$("#refresh").onclick=()=>LOAD[current]();
+$("#updbtn").onclick=checkUpdate;
+async function checkUpdate(){
+  const u=$("#updstate");u.innerHTML=`<span class="muted">${T("checking")}</span>`;
+  let r;try{r=await api("/api/update/check")}catch(e){r={error:String(e)}}
+  if(r.error){u.innerHTML=`<span class="bad">${esc(r.error)}</span>`;return}
+  if(!r.newer){u.innerHTML=`<span class="good">${T("up_to_date",esc(r.installed))}</span>`;return}
+  u.innerHTML=`<span class="warn">${T("update_avail",esc(r.installed),esc(r.latest))}</span> <button class="btn" id="updgo">${T("install_update",esc(r.latest))}</button>`;
+  $("#updgo").onclick=()=>installUpdate(r);
+}
+async function installUpdate(r){
+  if(!confirm(T("confirm_update",r.latest)))return;
+  const u=$("#updstate");u.innerHTML=`<span class="warn">${T("updating")}</span>`;
+  $("#updbtn").disabled=$("#runbtn").disabled=true;
+  let res;try{res=await post("/api/update/install")}catch(e){res={error:String(e)}}
+  if(res.error||!res.started){u.innerHTML=`<span class="bad">${esc(res.error||res.reason)}</span>`;$("#updbtn").disabled=false;return}
+  const t0=Date.now();let down=false;
+  const tick=async()=>{let c=null;try{c=await api("/api/config")}catch(e){down=true}
+    if(c&&c.version===r.latest){u.innerHTML=`<span class="good">${T("updated",esc(c.version))}</span>`;setTimeout(()=>location.reload(),1500);return}
+    if((c&&down)||Date.now()-t0>240000){let l={text:""};try{l=await api("/api/update/log")}catch(e){}
+      u.innerHTML=`<span class="bad">${T("update_failed")}</span> <details style="display:inline-block"><summary>${T("update_log")}</summary><pre style="position:absolute;max-width:90vw;z-index:9">${esc(l.text)}</pre></details>`;
+      $("#updbtn").disabled=false;return}
+    setTimeout(tick,2000)};
+  setTimeout(tick,2000);
+}
+async function poll(){const o=await api("/api/overview");runstate(o.run);
+  if(o.run.running)setTimeout(poll,3000);else LOAD[current]();}
+setInterval(()=>{if(["overview","log","inbox"].includes(current))LOAD[current]()},30000);
+
+applyLang();
+api("/api/config").then(c=>{CFG=c;applyLang();show(current in LOAD?current:"overview")});
+</script>
+</body>
+</html>

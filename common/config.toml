@@ -1,0 +1,38 @@
+# إعدادات Agents Lab
+
+# الوكلاء الثلاثة يجيبون من تطبيقاتهم يوم 20؛ ردودهم تصل إلى inbox
+# (Claude و Codex يحفظان الرد بنفسيهما؛ رد Gemini يُلصق يدوياً في اللوحة ← «صندوق الردود»)
+[agents.gemini]
+provider = "manual"
+model    = "gemini-app"
+
+[agents.chatgpt]
+provider = "manual"
+model    = "codex"
+
+[agents.claude]
+provider = "manual"
+model    = "claude-app"
+
+[lab]
+db_path    = "lab.db"
+benchmark  = "XEQT.TO"
+universe   = ["XEQT.TO", "VFV.TO", "XUU.TO", "VEQT.TO", "ZQQ.TO", "XEF.TO", "XEC.TO", "XIC.TO", "CASH"]
+min_forecasts_per_agent = 4
+horizons_days = [30, 90, 180]
+inbox      = "inbox"
+session_day = 20                       # يوم الجلسة الشهرية (يُستخدم فقط لوكلاء API إن أُضيفوا)
+# السؤال ثابت كل شهر — نفس النص يُعطى للوكلاء الثلاثة
+question = """Today the investor adds 100 CAD to a TFSA at Wealthsimple (horizon 15 years,
+already holds a diversified equity ETF portfolio). How should this month's 100 CAD be
+allocated across the allowed universe, and what are your calibrated forecasts?"""
+
+# أسئلة إلزامية متطابقة لكل الوكلاء كل شهر — أساس المقارنة العادلة
+core_forecasts = [
+  { kind = "return_above", ticker_a = "XEQT.TO", threshold = 0.0,  horizon_days = 30 },
+  { kind = "return_above", ticker_a = "XEQT.TO", threshold = 0.02, horizon_days = 90 },
+  { kind = "outperform",   ticker_a = "VFV.TO",  ticker_b = "XEQT.TO", horizon_days = 90 },
+  { kind = "outperform",   ticker_a = "ZQQ.TO",  ticker_b = "VFV.TO",  horizon_days = 180 },
+  { kind = "outperform",   ticker_a = "XEF.TO",  ticker_b = "VFV.TO",  horizon_days = 180 },
+  { kind = "outperform",   ticker_a = "XIC.TO",  ticker_b = "XEQT.TO", horizon_days = 90 },
+]
