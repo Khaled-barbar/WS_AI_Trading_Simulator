@@ -17,11 +17,18 @@ def fetch_yahoo(conn, ticker: str, start: str, end: str) -> int:
     ts = res.get("timestamp") or []
     ind = res["indicators"]
     closes = (ind.get("adjclose") or [{}])[0].get("adjclose") or ind["quote"][0]["close"]
+    meta = res.get("meta", {})
+    offset = int(meta.get("gmtoffset") or 0)  # exchange local time -> correct trading date
+    session = (meta.get("currentTradingPeriod") or {}).get("regular") or {}
     n = 0
     for t, c in zip(ts, closes):
         if c is None:
             continue
-        d = datetime.fromtimestamp(t, tz=timezone.utc).date().isoformat()
+        # A bar of today's session before the close is an intraday price, not a close:
+        # never store it (the final close is stored by the next run after the market closes)
+        if session and t >= session["start"] - 6 * 3600 and time.time() < session["end"]:
+            continue
+        d = datetime.fromtimestamp(t + offset, tz=timezone.utc).date().isoformat()
         conn.execute("INSERT OR REPLACE INTO prices VALUES (?,?,?,?)", (ticker, d, c, "yahoo"))
         n += 1
     conn.commit()
@@ -53,13 +60,17 @@ def price_on_or_before(conn, ticker, d):
     return (r["date"], r["close"]) if r else None
 
 
-def total_return(conn, ticker, start, end):
-    """None إذا كانت البيانات ناقصة."""
+def total_return(conn, ticker, start, end, final=False):
+    """None إذا كانت البيانات ناقصة.
+    final=True (للحسم): يلزم وجود إغلاق في تاريخ الحسم أو بعده، أي أن إغلاق تاريخ الحسم
+    (أو آخر يوم تداول قبله إن كان عطلة) معروف نهائياً وليس سعراً أقدم."""
     if ticker == "CASH":
         return 0.0
     a = price_on_or_after(conn, ticker, start)
     b = price_on_or_before(conn, ticker, end)
     if not a or not b or b[0] <= a[0]:
+        return None
+    if final and not price_on_or_after(conn, ticker, end):
         return None
     # نرفض الحسم إذا كان آخر سعر متاح أقدم من تاريخ الحسم بأكثر من 5 أيام
     if (date.fromisoformat(end) - date.fromisoformat(b[0])) > timedelta(days=5):

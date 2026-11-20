@@ -14,9 +14,9 @@ def resolve(conn, today=None, log=print):
                        (today,)).fetchall()
     done = missing = 0
     for f in due:
-        ra = total_return(conn, f["ticker_a"], f["start_date"], f["resolve_date"])
+        ra = total_return(conn, f["ticker_a"], f["start_date"], f["resolve_date"], final=True)
         if f["kind"] == "outperform":
-            rb = total_return(conn, f["ticker_b"], f["start_date"], f["resolve_date"])
+            rb = total_return(conn, f["ticker_b"], f["start_date"], f["resolve_date"], final=True)
             outcome = None if ra is None or rb is None else int(ra > rb)
         else:
             outcome = None if ra is None else int(ra > f["threshold"])
@@ -28,8 +28,9 @@ def resolve(conn, today=None, log=print):
                      (outcome, brier, today, f["id"]))
         done += 1
     conn.commit()
-    log(f"resolved {done} forecasts; {missing} due but missing price data "
-        f"(run `fetch-prices` or `import-prices`)")
+    log(f"resolved {done} forecasts; {missing} due but waiting for a final closing price "
+        f"on/after the resolve date (normal for 1-2 days; if it lasts, run `fetch-prices` "
+        f"or `import-prices`)")
 
 
 def tickers_needed(conn, universe=()):

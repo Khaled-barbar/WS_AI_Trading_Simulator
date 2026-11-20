@@ -90,7 +90,7 @@ ar:{
   kpi_sessions:"جلسات شهرية",kpi_responses:"ردود الوكلاء",kpi_resolved:"توقعات محسومة",of:"من",
   kpi_next:"موعد الحسم القادم",kpi_lastprice:"آخر سعر محفوظ",kpi_inbox:"ملفات تنتظر في inbox",
   inbox_failed:n=>`${n} فشل استيرادها`,
-  overdue:n=>`${n} توقعات حلّ موعدها ولم تُحسم بعد (تنقص الأسعار؟) — اضغط «تشغيل الآن».`,
+  overdue:n=>`${n} توقعات مرّ على موعد حسمها أكثر من 4 أيام ولم تُحسم (تنقص الأسعار؟) — اضغط «تشغيل الآن».`,
   this_month:m=>`هذا الشهر (${m})`,th_agent:"الوكيل",th_method:"الطريقة",th_status:"الحالة",
   scoreboard:"لوحة النتائج — Brier (الأقل أفضل؛ قول 50% دائماً = 0.250)",
   th_core_brier:"Brier الأسئلة الإلزامية",th_n:"عدد",th_all_brier:"Brier الكل",th_pending:"معلّقة",
@@ -104,7 +104,7 @@ ar:{
   vs:"مقابل",core_chip:"إلزامي",pending_cell:"معلّق",
   funds_title:"قائمة الصناديق المسموحة · المؤشر المرجعي:",th_fund:"الصندوق",th_last:"آخر سعر",th_date:"التاريخ",
   th_1m:"شهر",th_3m:"3 أشهر",th_1y:"سنة",th_6m:"آخر 6 أشهر",bench_chip:"مرجعي",no_data:"لا بيانات",
-  prices_note:"أسعار معدّلة تشمل التوزيعات (Yahoo). CASH = عائد 0%.",
+  prices_note:"أسعار إغلاق نهائية معدّلة تشمل التوزيعات (Yahoo)؛ سعر اليوم يظهر بعد إغلاق السوق. CASH = عائد 0%.",stale:"قديم",
   core_title:"الأسئلة الإلزامية الشهرية",days:"يوماً",
   horizons_note:(h,n)=>`آفاق مسموحة: <span class="ltr">${h}</span> يوماً · حد أدنى ${n} توقعات لكل وكيل`,
   paste_title:"لصق رد جديد",
@@ -132,7 +132,7 @@ en:{
   kpi_sessions:"Monthly sessions",kpi_responses:"Agent replies",kpi_resolved:"Resolved forecasts",of:"of",
   kpi_next:"Next resolution date",kpi_lastprice:"Latest stored price",kpi_inbox:"Files waiting in inbox",
   inbox_failed:n=>`${n} failed to import`,
-  overdue:n=>`${n} forecasts are past their resolution date but not resolved yet (missing prices?) — click "Run now".`,
+  overdue:n=>`${n} forecasts are more than 4 days past their resolution date and still unresolved (missing prices?) — click "Run now".`,
   this_month:m=>`This month (${m})`,th_agent:"Agent",th_method:"Method",th_status:"Status",
   scoreboard:"Scoreboard — Brier (lower is better; always saying 50% = 0.250)",
   th_core_brier:"Core-question Brier",th_n:"n",th_all_brier:"All Brier",th_pending:"Pending",
@@ -146,7 +146,7 @@ en:{
   vs:"vs",core_chip:"core",pending_cell:"pending",
   funds_title:"Allowed funds · Benchmark:",th_fund:"Fund",th_last:"Last price",th_date:"Date",
   th_1m:"1M",th_3m:"3M",th_1y:"1Y",th_6m:"Last 6 months",bench_chip:"benchmark",no_data:"no data",
-  prices_note:"Adjusted prices including distributions (Yahoo). CASH = 0% return.",
+  prices_note:"Final adjusted closing prices including distributions (Yahoo); today's price appears after the market closes. CASH = 0% return.",stale:"stale",
   core_title:"Monthly core questions",days:"days",
   horizons_note:(h,n)=>`Allowed horizons: <span class="ltr">${h}</span> days · minimum ${n} forecasts per agent`,
   paste_title:"Paste a new reply",
@@ -286,7 +286,7 @@ async prices(){
    <div class="tablewrap"><table><tr><th>${T("th_fund")}</th><th>${T("th_last")}</th><th>${T("th_date")}</th><th>${T("th_1m")}</th><th>${T("th_3m")}</th><th>${T("th_1y")}</th><th>${T("th_6m")}</th></tr>
    ${CFG.universe.map(t=>{const p=ps[t]||[];const l=p[p.length-1];
      return `<tr><td class="ltr"><b>${esc(t)}</b>${t===CFG.benchmark?` <span class="chip">${T("bench_chip")}</span>`:""}</td>
-     <td class="ltr">${t==="CASH"?"—":l?l[1].toFixed(2):T("no_data")}</td><td class="ltr">${l?esc(l[0]):"—"}</td>
+     <td class="ltr">${t==="CASH"?"—":l?l[1].toFixed(2):T("no_data")}</td><td class="ltr${l&&(Date.now()-new Date(l[0]))>6*864e5?" bad":""}">${l?esc(l[0]):"—"}${l&&(Date.now()-new Date(l[0]))>6*864e5?` <span class="chip">${T("stale")}</span>`:""}</td>
      ${[30,91,365].map(d=>{const r=ret(p,d);return `<td class="ltr ${r==null?"muted":r>=0?"good":"bad"}">${pct(r)}</td>`}).join("")}
      <td>${spark(p)}</td></tr>`}).join("")}</table></div>
    <p class="muted">${T("prices_note")}</p></div>

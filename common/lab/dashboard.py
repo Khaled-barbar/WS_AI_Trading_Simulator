@@ -49,11 +49,14 @@ class API:
         c = self.conn()
         today = date.today().isoformat()
         month = today[:7]
+        # resolution waits for the final close on/after the resolve date (1-2 days is
+        # normal), so only flag forecasts stuck for more than 4 days
+        stuck = (date.today() - timedelta(days=4)).isoformat()
         stats = c.execute(
             "SELECT COUNT(*) n, SUM(outcome IS NOT NULL) resolved, "
-            "SUM(outcome IS NULL AND resolve_date<=?) overdue, "
+            "SUM(outcome IS NULL AND resolve_date<?) overdue, "
             "MIN(CASE WHEN outcome IS NULL AND resolve_date>? THEN resolve_date END) next_due "
-            "FROM forecasts", (today, today)).fetchone()
+            "FROM forecasts", (stuck, today)).fetchone()
         this_month = {r["agent"]: r["created_at"] for r in c.execute(
             "SELECT r.agent, r.created_at FROM responses r JOIN sessions s ON s.id=r.session_id "
             "WHERE substr(s.created_at,1,7)=?", (month,))}
