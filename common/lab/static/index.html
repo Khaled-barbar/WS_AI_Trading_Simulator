@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Agents Lab</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<meta name="theme-color" content="#2f6fde">
 <style>
 :root{
   --bg:#f6f7f9;--panel:#fff;--ink:#1b1f24;--muted:#5f6b7a;--line:#e3e6ea;
@@ -84,7 +88,12 @@ svg.spark{display:block}
 .formgrid{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
 .formgrid label{display:flex;flex-direction:column;font-size:12.5px;color:var(--muted);gap:3px}
 .hl{background:color-mix(in srgb,var(--accent) 7%,transparent)}
-@media (max-width:600px){main{padding:12px}.agents{grid-template-columns:1fr}header{padding:10px 12px}nav{padding:6px 12px}}
+@media (max-width:600px){main{padding:12px 10px}.agents,.cards{grid-template-columns:1fr}header{padding:8px 10px;gap:6px}
+  header h1{font-size:16px;width:100%}header .sp{display:none}header button.btn{padding:5px 9px;font-size:13px}#runstate,#updstate{font-size:12px}
+  nav{padding:6px 10px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}nav::-webkit-scrollbar{display:none}nav button{white-space:nowrap;flex:none}
+  nav#items{flex-wrap:nowrap;max-height:none}.grid{grid-template-columns:repeat(2,1fr);gap:8px}.card{padding:12px}.kpi .v{font-size:18px}
+  th,td{padding:6px 5px;font-size:13px}.ac .list{min-width:0;width:92vw}.ac input{width:min(320px,80vw)!important}
+  td.ltr{white-space:nowrap}.formgrid label{flex:1 1 140px}.formgrid input,.formgrid select{width:100%!important}.seg{flex-wrap:wrap}}
 </style>
 </head>
 <body>

@@ -18,6 +18,8 @@ from .tracks import track_cfg, tracks
 
 STATIC = Path(__file__).resolve().parent / "static"
 HISTORY = "2016-01-01"
+STATIC_FILES = {"manifest.json": "application/manifest+json", "icon-192.png": "image/png",
+                "icon-512.png": "image/png"}
 _run_lock = threading.Lock()
 _fetch_lock = threading.Lock()
 _run_state = {"running": False, "started": None, "finished": None, "code": None}
@@ -455,6 +457,9 @@ def make_handler(api: API):
                 if u.path in ("/", "/index.html"):
                     return self._send(200, (STATIC / "index.html").read_bytes(),
                                       "text/html; charset=utf-8")
+                if u.path.lstrip("/") in STATIC_FILES:  # app icon + manifest ("Add to Home screen")
+                    name = u.path.lstrip("/")
+                    return self._send(200, (STATIC / name).read_bytes(), STATIC_FILES[name])
                 if u.path in routes_get:
                     return self._send(200, routes_get[u.path](q))
                 self._send(404, {"error": "not found"})

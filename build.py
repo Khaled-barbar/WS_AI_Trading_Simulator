@@ -3,6 +3,7 @@
   AgentsLab-update.pyz     the single updater file (Windows + Linux)
   AgentsLab-windows.zip    fresh install for Windows
   AgentsLab-linux.zip      fresh install for Linux
+  AgentsLab-android.zip    fresh install for Android (Termux; see android/get.sh)
 
 Usage: bump VERSION, then  python build.py
 """
@@ -16,7 +17,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 VERSION = (HERE / "VERSION").read_text(encoding="utf-8").strip()
 DIST = HERE / "releases"
-GROUPS = ("common", "windows", "linux")
+GROUPS = ("common", "windows", "linux", "android")
 
 
 def listing(group):
@@ -59,5 +60,5 @@ def build_install_zip(plat, files):
 if __name__ == "__main__":
     DIST.mkdir(exist_ok=True)
     files = {g: listing(g) for g in GROUPS}
-    for p in [build_updater(files)] + [build_install_zip(x, files) for x in ("windows", "linux")]:
+    for p in [build_updater(files)] + [build_install_zip(x, files) for x in ("windows", "linux", "android")]:
         print(f"{p.name}  ({p.stat().st_size // 1024} KB)")

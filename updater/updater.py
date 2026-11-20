@@ -20,14 +20,17 @@ from datetime import datetime
 from pathlib import Path
 
 IS_WIN = sys.platform == "win32"
-PLAT = "windows" if IS_WIN else "linux"
+# Android = Python inside the Termux app (sys.platform is "linux" or "android" there)
+IS_ANDROID = (sys.platform == "android" or "com.termux" in os.environ.get("PREFIX", "")
+              or "TERMUX_VERSION" in os.environ)
+PLAT = "windows" if IS_WIN else "android" if IS_ANDROID else "linux"
 PORT = 8765
 # Never written by the updater (config.toml is only edited by migrations below)
 USER_DATA = ("lab.db", "config.toml", "inbox", "logs", "report.md", "backups", "prompts")
 
 
 # ---------------------------------------------------------------- payload
-GROUPS = ("common", "windows", "linux")
+GROUPS = ("common", "windows", "linux", "android")
 
 
 class Payload:
@@ -63,7 +66,7 @@ class Payload:
     def files(self):
         """(relative install path, archive name) for this platform; config.toml excluded."""
         for group in ("common", PLAT):
-            for rel in self.manifest[group]:
+            for rel in self.manifest.get(group, []):
                 if group == "common" and rel == "config.toml":
                     continue
                 yield rel, f"payload/{group}/{rel}"

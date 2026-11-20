@@ -16,7 +16,8 @@ Since 1.4.0 the dashboard has five menus:
   withdrawals. Each is compared with a benchmark that receives the same deposits.
 - **System:** inbox, prompts, report, log.
 
-Runs locally on **Windows** and **Linux** (Python 3.11+, standard library only). The dashboard is
+Runs locally on **Windows**, **Linux** and **Android** (Python 3.11+, standard library only;
+on Android inside the free Termux app). The dashboard is
 at http://127.0.0.1:8765, in Arabic or English.
 
 ## Download
@@ -25,13 +26,16 @@ at http://127.0.0.1:8765, in Arabic or English.
 |---|---|
 | Fresh install — Windows | [`releases/AgentsLab-windows.zip`](releases/AgentsLab-windows.zip) |
 | Fresh install — Linux | [`releases/AgentsLab-linux.zip`](releases/AgentsLab-linux.zip) |
-| Update an existing install (Windows **and** Linux) | [`releases/AgentsLab-update.pyz`](releases/AgentsLab-update.pyz) |
+| Fresh install — Android (in Termux) | `curl -fsSL https://raw.githubusercontent.com/Khaled-barbar/WS_AI_Trading_Simulator/main/android/get.sh \| bash` ([`releases/AgentsLab-android.zip`](releases/AgentsLab-android.zip)) |
+| Update an existing install (Windows, Linux **and** Android) | [`releases/AgentsLab-update.pyz`](releases/AgentsLab-update.pyz) |
 
 Current version: see [`VERSION`](VERSION).
 
 ### Fresh install
 - **Windows:** unzip, then double-click `install.bat`.
 - **Linux:** unzip, then run `./install.sh`.
+- **Android:** install Termux from F-Droid, then paste the `curl … get.sh | bash` command above into it. The
+  dashboard opens in Chrome (add it to the home screen for an app icon). See `android/README.md`.
 
 Full instructions (Arabic) are in the `README.md` inside each zip.
 
@@ -61,6 +65,7 @@ common/            files for both platforms (lab/ package, schema.sql, default c
                    requirements.txt)
 windows/           Windows scripts + README
 linux/             Linux scripts + README
+android/           Android (Termux) scripts + README; get.sh = one-command install
 updater/updater.py the updater (bundled into the .pyz, and run from source by the dashboard button)
 build.py           builds releases/
 releases/          built files, committed so they can be downloaded directly
